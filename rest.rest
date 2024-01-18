@@ -1,2 +1,5 @@
 ### main  page
 GET http://localhost:3000/
+
+### Get all products
+GET http://localhost:3000/api/products
