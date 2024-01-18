@@ -1,14 +1,14 @@
-const APiError = require('../apiError/APiError');
 const chalk = require('chalk');
+const APiError = require('../middleware/errors');
 
-const { makeSqlQuarry } = require('../helpers/makeHelpers');
+const { sqlQuarryHelper } = require('../utils/helper');
 
 module.exports = {
   getAllProducts: async (req, res, next) => {
     const sql = 'SELECT * FROM `products` WHERE isDeleted=0';
 
     // make SQL quarry
-    const [products, error] = await makeSqlQuarry(sql);
+    const [products, error] = await sqlQuarryHelper(sql);
 
     console.log(chalk.bgRed.whiteBright('getAllProducts error ==='));
     if (error) return next(error);
@@ -21,7 +21,7 @@ module.exports = {
 
     const sql = 'SELECT * FROM `products` WHERE id=?';
     // make SQL quarry
-    const [product, error] = await makeSqlQuarry(sql, [prodId]);
+    const [product, error] = await sqlQuarryHelper(sql, [prodId]);
 
     if (error) {
       console.log(chalk.bgRed.whiteBright('getSingleProduct error ==='));
