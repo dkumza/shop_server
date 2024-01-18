@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 const jwt = require('jsonwebtoken');
+const chalk = require('chalk');
 const APIError = require('../apiError/APiError');
 
 const { dbConfig, jwtSecret } = require('./configHelper');
@@ -26,7 +27,7 @@ module.exports = {
   },
 
   makeError: (gotError, req, res, next) => {
-    console.log('gotError === ', gotError);
+    console.log(chalk.bgRed.whiteBright('gotError ==='), gotError);
 
     if (gotError instanceof APIError) {
       return res.status(gotError.status).json({
