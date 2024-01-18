@@ -32,4 +32,8 @@ module.exports = {
     }
     res.json(product[0]);
   },
+
+  createProduct: async (req, res, next) => {
+    const { title, description, price, rating, stock, cat_id, img_url } = req.body;
+  },
 };

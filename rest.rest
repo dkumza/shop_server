@@ -1,6 +1,16 @@
 ### main  page
 GET http://localhost:3000/
 
+### register
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "janina",
+  "email": "mike@bond.com",
+  "password": "123456"
+}
+
 ### Get all products
 GET http://localhost:3000/api/products
 

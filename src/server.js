@@ -6,6 +6,7 @@ const cors = require('cors');
 const productRouter = require('./routes/productRoutes');
 const APIError = require('./utils/apiErrors');
 const { makeError } = require('./middleware/errors');
+const authRouter = require('./routes/autRoutes');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 //  Routes
 app.use('/api', productRouter);
+app.use('/api', authRouter);
 
 // 404 not found - for all other routes
 app.use((req, res) => {
