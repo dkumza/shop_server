@@ -3,19 +3,17 @@ const jwt = require('jsonwebtoken');
 
 const { dbConfig, jwtSecret } = require('../config/config');
 
-const pool = mysql.createPool(dbConfig);
-
 module.exports = {
   sqlQuarryHelper: async (sql, argArr = []) => {
     let connection;
     try {
-      connection = await pool.getConnection(); // connecting to DB
+      connection = await mysql.createConnection(dbConfig); // connecting to DB
       const [rows] = await connection.execute(sql, argArr); // execute task
       return [rows, null];
     } catch (error) {
       return [null, error];
     } finally {
-      if (connection) connection.release();
+      if (connection) connection.end();
     }
   },
 

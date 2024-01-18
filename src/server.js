@@ -4,6 +4,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const productRouter = require('./routes/productRoutes');
+const APIError = require('./utils/apiErrors');
+const { makeError } = require('./middleware/errors');
 
 const app = express();
 
@@ -27,6 +29,9 @@ app.use((req, res) => {
     error: '404 - Endpoint not found',
   });
 });
+
+// all errors goes here
+app.use(makeError);
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);

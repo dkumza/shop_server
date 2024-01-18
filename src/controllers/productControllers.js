@@ -1,5 +1,5 @@
+const APIError = require('../utils/apiErrors');
 const chalk = require('chalk');
-const APiError = require('../middleware/errors');
 
 const { sqlQuarryHelper } = require('../utils/helper');
 
@@ -10,7 +10,6 @@ module.exports = {
     // make SQL quarry
     const [products, error] = await sqlQuarryHelper(sql);
 
-    console.log(chalk.bgRed.whiteBright('getAllProducts error ==='));
     if (error) return next(error);
 
     res.json(products);
@@ -28,8 +27,9 @@ module.exports = {
       return next(error);
     }
 
-    if (product.length === 0) return next(new APiError('Product not found', 404));
-
+    if (product.length === 0) {
+      return next(new APIError('Product not found', 404));
+    }
     res.json(product[0]);
   },
 };
