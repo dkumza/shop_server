@@ -3,3 +3,6 @@ GET http://localhost:3000/
 
 ### Get all products
 GET http://localhost:3000/api/products
+
+### Get single product
+GET http://localhost:3000/api/products/1

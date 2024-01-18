@@ -1,5 +1,7 @@
 const mysql = require('mysql2/promise');
 const jwt = require('jsonwebtoken');
+const APIError = require('../apiError/APiError');
+
 const { dbConfig, jwtSecret } = require('./configHelper');
 
 const pool = mysql.createPool(dbConfig);
@@ -21,5 +23,26 @@ module.exports = {
   makeJWTToken: (data, expires = '1h') => {
     if (!jwtSecret) throw new Error('no secret provided'); // while in dev mode
     return jwt.sign(data, jwtSecret, { expiresIn: expires });
+  },
+
+  makeError: (gotError, req, res, next) => {
+    console.log('gotError === ', gotError);
+
+    if (gotError instanceof APIError) {
+      return res.status(gotError.status).json({
+        error: gotError.message,
+      });
+    }
+
+    if (gotError?.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({
+        error: 'Email already taken',
+      });
+    }
+
+    // in other condition
+    res.status(500).json({
+      error: 'System error',
+    });
   },
 };

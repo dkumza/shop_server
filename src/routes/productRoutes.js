@@ -7,5 +7,7 @@ const productControllers = require('../controllers/productControllers');
 
 // GET all products
 productRouter.get('/products', productControllers.getAllProducts);
+// GET single product
+productRouter.get('/products/:prodId', productControllers.getSingleProduct);
 
 module.exports = productRouter;
