@@ -1,5 +1,7 @@
 # server side for shopping app
 
+for latest version check [dev brach](https://github.com/dkumza/shop_server/tree/dev) (not stable!!!) <br>
+
 simple CRUD that handles APIs requests from SQL.
 
 #### API endpoints are currently working:
