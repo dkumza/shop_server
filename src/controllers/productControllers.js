@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const APIError = require('../utils/apiErrors');
 const { sqlQuarryHelper } = require('../utils/helpers');
+const { deleteFile } = require('../middleware/uploadMW');
 
 module.exports = {
   getAllProducts: async (req, res, next) => {
@@ -30,8 +31,13 @@ module.exports = {
       return next(new APIError('Product not found', 404));
     }
 
+    console.log(chalk.bgGreen.whiteBright('product ==='), product);
+
     res.status(200).json({
-      product: product[0],
+      product: {
+        ...product[0],
+        img_url: `http://localhost:3000/${product[0].img_url}`,
+      },
       msg: 'Product fetched successfully',
     });
   },
@@ -50,11 +56,17 @@ module.exports = {
 
     if (error) {
       console.log(chalk.bgRed.whiteBright('error ==='), error);
+      // Delete the uploaded file
+
+      deleteFile(img_url);
       return next(error);
     }
 
     if (product.affectedRows !== 1) {
       console.log(chalk.bgRed.whiteBright('product ==='), product);
+      // Delete the uploaded file
+      deleteFile(img_url);
+
       return next(new APIError('something went wrong', 400));
     }
 

@@ -2,7 +2,7 @@ const express = require('express');
 
 const productRouter = express.Router();
 const productControllers = require('../controllers/productControllers');
-const upload = require('../middleware/uploadMW');
+const { upload } = require('../middleware/uploadMW');
 
 // ROUTES
 

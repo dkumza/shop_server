@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 const { dbConfig, jwtSecret } = require('../config/config');
 

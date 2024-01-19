@@ -24,7 +24,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/products
 
 ### Get single product
-GET http://localhost:3000/api/products/5
+GET http://localhost:3000/api/products/19
 
 ### create new product
 POST http://localhost:3000/api/products/
@@ -55,7 +55,7 @@ Content-Disposition: form-data; name="cat_id"
 
 3
 --WebAppBoundary
-Content-Disposition: form-data; name="image"; filename="test.jpg"
+Content-Disposition: form-data; name="image"; filename="test.jpeg"
 Content-Type: image/jpeg
 
 < ./path/to/test.jpg
