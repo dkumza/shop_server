@@ -1,5 +1,5 @@
 # server side for shopping app
-
+ 
 for latest version check [dev brach](https://github.com/dkumza/shop_server/tree/dev) (not stable!!!) <br>
 
 simple CRUD that handles APIs requests from SQL.
@@ -27,3 +27,4 @@ To install the application, follow these steps:
 1. Clone the repository.
 2. Navigate to the `shop_server` folder and run `npm install` to install the server dependencies.
 3. ~~Import "shopping.sql" to your local SQL server.~~
+
