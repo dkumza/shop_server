@@ -12,5 +12,7 @@ productRouter.get('/products', productControllers.getAllProducts);
 productRouter.get('/products/:prodId', productControllers.getSingleProduct);
 // POST - create new product
 productRouter.post('/products', upload.single('image'), productControllers.createProduct);
+// DELETE - delete product
+// productRouter.post('/products', productControllers);
 
 module.exports = productRouter;

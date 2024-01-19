@@ -39,6 +39,7 @@ module.exports = {
   createProduct: async (req, res, next) => {
     const { title, description, price, rating, stock, cat_id } = req.body;
 
+    console.log(chalk.bgRed.whiteBright('req.file.path ==='), req.file);
     const img_url = req.file.path;
 
     const prodData = [title, description, price, rating, stock, cat_id, img_url];
