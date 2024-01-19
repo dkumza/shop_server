@@ -11,8 +11,52 @@ Content-Type: application/json
   "password": "123456"
 }
 
+### login
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "mike@bond.com",
+  "password": "123456"
+}
+
 ### Get all products
 GET http://localhost:3000/api/products
 
 ### Get single product
-GET http://localhost:3000/api/products/2
+GET http://localhost:3000/api/products/5
+
+### create new product
+POST http://localhost:3000/api/products/
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+New Product
+--WebAppBoundary
+Content-Disposition: form-data; name="description"
+
+Good product
+--WebAppBoundary
+Content-Disposition: form-data; name="price"
+
+99.99
+--WebAppBoundary
+Content-Disposition: form-data; name="rating"
+
+4.05
+--WebAppBoundary
+Content-Disposition: form-data; name="stock"
+
+3
+--WebAppBoundary
+Content-Disposition: form-data; name="cat_id"
+
+3
+--WebAppBoundary
+Content-Disposition: form-data; name="image"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/test.jpg
+--WebAppBoundary--

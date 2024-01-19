@@ -1,7 +1,6 @@
 const chalk = require('chalk');
 const bcrypt = require('bcryptjs');
-const authToken = require('../middleware/authToken');
-const { sqlQuarryHelper } = require('../utils/helper');
+const { sqlQuarryHelper, jWTTokenHelper } = require('../utils/helpers');
 const APIError = require('../utils/apiErrors');
 
 module.exports = {
@@ -33,9 +32,9 @@ module.exports = {
     }
 
     // if all conditions met - generate session token
-    const token = authToken({ email: foundUserInDB.email, sub: foundUserInDB.id });
+    const token = jWTTokenHelper({ email: foundUserInDB.email, sub: foundUserInDB.id });
     res.json({
-      msg: 'login success',
+      msg: 'Login success',
       token,
     });
   },
@@ -56,10 +55,10 @@ module.exports = {
 
     console.log(chalk.bgRed.whiteBright('customer.affectedRows ==='), customer.affectedRows);
 
-    // sekmingas yrasymas
+    // created sucess
     if (customer.affectedRows === 1) {
       res.status(201).json({
-        msg: 'user created',
+        msg: 'Customer created successfully',
         id: customer.insertId,
       });
     }

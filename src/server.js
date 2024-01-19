@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const productRouter = require('./routes/productRoutes');
 const APIError = require('./utils/apiErrors');
-const { makeError } = require('./middleware/errors');
+const { makeError } = require('./middleware/errorMsg');
 const authRouter = require('./routes/autRoutes');
 
 const app = express();
