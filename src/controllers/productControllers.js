@@ -44,7 +44,14 @@ module.exports = {
 
   createProduct: async (req, res, next) => {
     const { title, description, price, rating, stock, cat_id } = req.body;
+    const { userID } = req;
     const img_url = req.file.path;
+
+    if (userID !== 1) {
+      deleteFile(img_url);
+      return next(new APIError('Unauthorized', 400));
+    }
+
     const prodData = [title, description, price, rating, stock, cat_id, img_url];
     const sql = `INSERT INTO products (title, description, price, rating, stock, cat_id, img_url) 
     

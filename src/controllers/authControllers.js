@@ -4,6 +4,30 @@ const { sqlQuarryHelper, jWTTokenHelper } = require('../utils/helpers');
 const APIError = require('../utils/apiErrors');
 
 module.exports = {
+  register: async (req, res, next) => {
+    const { name, email, password } = req.body;
+
+    // bcrypt password
+    const passwordHash = bcrypt.hashSync(password, 10);
+
+    const sql = 'INSERT INTO `customers` (`name`, `email`, `password`) VALUES (?, ?, ?)';
+    const [customer, error] = await sqlQuarryHelper(sql, [name, email, passwordHash]);
+
+    if (error) {
+      console.log(chalk.bgRed.whiteBright('register error ==='));
+      return next(error);
+    }
+
+    console.log(chalk.bgRed.whiteBright('customer.affectedRows ==='), customer.affectedRows);
+
+    // created success
+    if (customer.affectedRows === 1) {
+      res.status(201).json({
+        msg: 'Customer created successfully',
+        id: customer.insertId,
+      });
+    }
+  },
   login: async (req, res, next) => {
     const { email, password } = req.body;
 
@@ -37,37 +61,5 @@ module.exports = {
       msg: 'Login success',
       token,
     });
-  },
-
-  register: async (req, res, next) => {
-    const { name, email, password } = req.body;
-
-    // bcrypt password
-    const passwordHash = bcrypt.hashSync(password, 10);
-
-    const sql = 'INSERT INTO `customers` (`name`, `email`, `password`) VALUES (?, ?, ?)';
-    const [customer, error] = await sqlQuarryHelper(sql, [name, email, passwordHash]);
-
-    if (error) {
-      console.log(chalk.bgRed.whiteBright('register error ==='));
-      return next(error);
-    }
-
-    console.log(chalk.bgRed.whiteBright('customer.affectedRows ==='), customer.affectedRows);
-
-    // created sucess
-    if (customer.affectedRows === 1) {
-      res.status(201).json({
-        msg: 'Customer created successfully',
-        id: customer.insertId,
-      });
-    }
-
-    console.log(chalk.bgRed.whiteBright('customer ==='), customer);
-
-    if (customer.length !== 1) {
-      console.log(chalk.bgRed.whiteBright('customer.length !== 1'));
-      return next(new APIError('Something went wrong', 400));
-    }
   },
 };

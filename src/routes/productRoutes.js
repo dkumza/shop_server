@@ -3,6 +3,7 @@ const express = require('express');
 const productRouter = express.Router();
 const productControllers = require('../controllers/productControllers');
 const { upload, imgQuality } = require('../middleware/upload');
+const authToken = require('../middleware/authToken');
 
 // ROUTES
 
@@ -13,6 +14,7 @@ productRouter.get('/products/:prodId', productControllers.getSingleProduct);
 // POST - create new product
 productRouter.post(
   '/products',
+  authToken,
   upload.single('image'),
   imgQuality,
   productControllers.createProduct,

@@ -14,7 +14,7 @@ if (!fs.existsSync(dir)) {
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    // Create a unique directory for each upload / product
+    // Create a unique directory for each created product
     const uploadDir = path.join(dir, Date.now().toString());
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
@@ -51,11 +51,13 @@ module.exports = {
   }),
 
   deleteFile: (filePath) => {
-    fs.unlink(filePath, (err) => {
+    const parentDir = path.dirname(filePath);
+
+    fs.rm(parentDir, { recursive: true, force: true }, (err) => {
       if (err) {
-        console.error(`Failed to delete the uploaded file: ${err}`);
+        console.error(`Failed to delete the directory: ${err}`);
       } else {
-        console.log(chalk.bgGreen.whiteBright('Uploaded file deleted successfully ==='));
+        console.log(chalk.bgGreen.whiteBright('Directory deleted successfully ==='));
       }
     });
   },
