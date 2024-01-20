@@ -48,6 +48,7 @@ module.exports = {
     const img_url = req.file.path;
 
     if (userID !== 1) {
+      // if not "admin"
       deleteFile(img_url);
       return next(new APIError('Unauthorized', 400));
     }
@@ -78,6 +79,32 @@ module.exports = {
     res.status(201).json({
       id: prodData.insertId,
       msg: 'New product created successfully',
+    });
+  },
+
+  delete: async (req, res, next) => {
+    const { prodId } = req.params;
+    const { userID } = req;
+
+    if (userID !== 1) {
+      // if not "admin"
+      return next(new APIError('Unauthorized', 400));
+    }
+
+    const sql = 'UPDATE `products` SET isDeleted=1 WHERE id=? LIMIT 1';
+    const [product, error] = await sqlQuarryHelper(sql, [prodId]);
+    if (error) {
+      console.log(chalk.bgRed.whiteBright('delete item error ==='), error);
+      return next(error);
+    }
+
+    if (product.affectedRows !== 1) {
+      console.log(chalk.bgRed.whiteBright('delete product error: '), product);
+      return next(new APIError('Something went wrong', 400));
+    }
+
+    res.status(200).json({
+      msg: 'Product deleted successfully',
     });
   },
 };

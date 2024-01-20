@@ -57,7 +57,7 @@ module.exports = {
       if (err) {
         console.error(`Failed to delete the directory: ${err}`);
       } else {
-        console.log(chalk.bgGreen.whiteBright('Directory deleted successfully ==='));
+        console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
       }
     });
   },

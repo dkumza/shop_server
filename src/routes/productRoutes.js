@@ -20,6 +20,6 @@ productRouter.post(
   productControllers.createProduct,
 );
 // DELETE - delete product
-// productRouter.post('/products', productControllers);
+productRouter.delete('/products/:prodId', authToken, productControllers.delete);
 
 module.exports = productRouter;

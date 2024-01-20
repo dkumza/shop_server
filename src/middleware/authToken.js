@@ -12,7 +12,6 @@ module.exports = function authToken(req, res, next) {
     if (!token) throw new Error('no token');
     const decoded = jwt.verify(token, jwtSecret);
     req.userID = decoded.sub;
-    console.log(chalk.bgGreen.whiteBright('decoded ==='), decoded);
     next();
   } catch (error) {
     console.log('error ===', error);
