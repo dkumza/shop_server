@@ -7,15 +7,22 @@ const APIError = require('../utils/apiErrors');
 const chalk = require('chalk');
 
 // default location to save images if no exists - creates
-const dir = './uploads';
+const dir = './uploads/products';
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    // Create a unique directory for each upload / product
+    const uploadDir = path.join(dir, Date.now().toString());
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    cb(null, uploadDir);
   },
+
   filename(req, file, cb) {
     // Create a date string with locale with short date style,
     // replace non-word characters with '_'
@@ -55,6 +62,7 @@ module.exports = {
 
   imgQuality: (req, res, next) => {
     const filePath = req.file.path;
+    // return correct file path to save updated img
     const newFilePath = path.join(path.dirname(filePath), `up_${path.basename(filePath)}`);
 
     sharp(filePath)
