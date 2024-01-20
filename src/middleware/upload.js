@@ -43,8 +43,8 @@ module.exports = {
     },
   }),
 
-  deleteFile: (path) => {
-    fs.unlink(path, (err) => {
+  deleteFile: (filePath) => {
+    fs.unlink(filePath, (err) => {
       if (err) {
         console.error(`Failed to delete the uploaded file: ${err}`);
       } else {
