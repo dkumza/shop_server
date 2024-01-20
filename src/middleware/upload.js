@@ -1,8 +1,10 @@
 const multer = require('multer');
 const fs = require('fs');
+const path = require('path');
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 const APIError = require('../utils/apiErrors');
+const chalk = require('chalk');
 
 // default location to save images if no exists - creates
 const dir = './uploads';
@@ -46,34 +48,30 @@ module.exports = {
       if (err) {
         console.error(`Failed to delete the uploaded file: ${err}`);
       } else {
-        console.log('Uploaded file deleted successfully');
+        console.log(chalk.bgGreen.whiteBright('Uploaded file deleted successfully ==='));
       }
     });
   },
 
   imgQuality: (req, res, next) => {
-    if (!req.file) {
-      throw new APIError('System error', 400);
-    }
-
-    const { path: filePath } = req.file;
+    const filePath = req.file.path;
+    const newFilePath = path.join(path.dirname(filePath), `up_${path.basename(filePath)}`);
 
     sharp(filePath)
-      // Resize the width to 500 pixels, w/o upscale
-      .resize(500, null, { withoutEnlargement: true })
+      .resize(null, 576, { withoutEnlargement: true })
       .jpeg({ quality: 70 })
-      .toFile(`${filePath}_xs.jpg`) // Save the resized/reduced file with a new name
+      .toFile(newFilePath)
       .then(() => {
         // Delete the original file
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error(`Failed to delete the original file: ${err}`);
-          }
-          next();
-        });
+        fs.unlinkSync(filePath);
+
+        // Update the file path in the request
+        req.file.path = newFilePath;
+
+        next();
       })
       .catch((err) => {
-        console.error(`Failed to resize/reduce the image: ${err}`);
+        console.error('Error processing image', err);
         next(err);
       });
   },

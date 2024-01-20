@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const APIError = require('../utils/apiErrors');
 const { sqlQuarryHelper } = require('../utils/helpers');
-const { deleteFile } = require('../middleware/uploadMW');
+const { deleteFile } = require('../middleware/upload');
 
 module.exports = {
   getAllProducts: async (req, res, next) => {
