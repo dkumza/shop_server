@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const APIError = require('../utils/apiErrors');
 const { sqlQuarryHelper } = require('../utils/helpers');
-const { deleteFile } = require('../middleware/uploadMW');
+const { deleteFile } = require('../middleware/upload');
 
 module.exports = {
   getAllProducts: async (req, res, next) => {
@@ -44,12 +44,10 @@ module.exports = {
 
   createProduct: async (req, res, next) => {
     const { title, description, price, rating, stock, cat_id } = req.body;
-
-    console.log(chalk.bgRed.whiteBright('req.file.path ==='), req.file);
     const img_url = req.file.path;
-
     const prodData = [title, description, price, rating, stock, cat_id, img_url];
     const sql = `INSERT INTO products (title, description, price, rating, stock, cat_id, img_url) 
+    
     VALUES (?,?,?,?,?,?,?)`;
 
     const [product, error] = await sqlQuarryHelper(sql, prodData);

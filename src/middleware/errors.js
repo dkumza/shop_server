@@ -17,6 +17,12 @@ module.exports = {
       });
     }
 
+    if (gotError?.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        error: 'Maximum image size is 1MB',
+      });
+    }
+
     // in other condition
     res.status(500).json({
       error: 'System error',
