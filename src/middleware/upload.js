@@ -27,14 +27,12 @@ const storage = multer.diskStorage({
   },
 
   filename(req, file, cb) {
-    console.log(chalk.bgGreen.whiteBright('file: '), file);
     // Create a date string with locale with short date style,
     // replace non-word characters with '_'
     const date = new Date().toLocaleString('lt').replace(/\W/g, '_');
     // Get the original file name, remove the extension,
     // join the remaining parts with '.', and replace non-word characters with '_'
     const originalName = file.originalname.split('.').slice(0, -1).join('.').replace(/\W/g, '_');
-    console.log(chalk.bgGreen.whiteBright('originalName: '), originalName);
     // Get the extension of the original file
     const extension = file.originalname.split('.').pop();
     const finalName = `${date}_${originalName}_${uuidv4()}.${extension}`;
