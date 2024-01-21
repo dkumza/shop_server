@@ -14,8 +14,11 @@ if (!fs.existsSync(dir)) {
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    // Create a unique directory for each upload / product
-    const uploadDir = path.join(dir, Date.now().toString());
+    // Create a unique directory for each created product
+    const uploadDir = path.join(
+      dir,
+      `${new Date().toLocaleString('lt').replace(/\W/g, '_')}_${uuidv4()}`,
+    );
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -24,15 +27,18 @@ const storage = multer.diskStorage({
   },
 
   filename(req, file, cb) {
+    console.log(chalk.bgGreen.whiteBright('file: '), file);
     // Create a date string with locale with short date style,
     // replace non-word characters with '_'
-    const date = new Date().toLocaleString('lt', { dateStyle: 'short' }).replace(/\W/g, '_');
+    const date = new Date().toLocaleString('lt').replace(/\W/g, '_');
     // Get the original file name, remove the extension,
     // join the remaining parts with '.', and replace non-word characters with '_'
     const originalName = file.originalname.split('.').slice(0, -1).join('.').replace(/\W/g, '_');
+    console.log(chalk.bgGreen.whiteBright('originalName: '), originalName);
     // Get the extension of the original file
     const extension = file.originalname.split('.').pop();
-    cb(null, `${date}_${originalName}_${uuidv4()}.${extension}`);
+    const finalName = `${date}_${originalName}_${uuidv4()}.${extension}`;
+    cb(null, finalName);
   },
 });
 
@@ -51,11 +57,13 @@ module.exports = {
   }),
 
   deleteFile: (filePath) => {
-    fs.unlink(filePath, (err) => {
+    const parentDir = path.dirname(filePath);
+
+    fs.rm(parentDir, { recursive: true, force: true }, (err) => {
       if (err) {
-        console.error(`Failed to delete the uploaded file: ${err}`);
+        console.error(`Failed to delete the directory: ${err}`);
       } else {
-        console.log(chalk.bgGreen.whiteBright('Uploaded file deleted successfully ==='));
+        console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
       }
     });
   },

@@ -1,5 +1,6 @@
 // file for authToken validation
 const jwt = require('jsonwebtoken');
+const chalk = require('chalk');
 
 const { jwtSecret } = require('../config/config');
 
@@ -11,7 +12,6 @@ module.exports = function authToken(req, res, next) {
     if (!token) throw new Error('no token');
     const decoded = jwt.verify(token, jwtSecret);
     req.userID = decoded.sub;
-
     next();
   } catch (error) {
     console.log('error ===', error);
