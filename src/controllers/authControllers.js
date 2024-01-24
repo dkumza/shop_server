@@ -47,6 +47,7 @@ module.exports = {
 
     // user found
     const foundUserInDB = customer[0];
+    console.log(chalk.bgGreen.whiteBright('foundUserInDB: '), foundUserInDB);
 
     const passHash = foundUserInDB.password;
 
@@ -60,6 +61,7 @@ module.exports = {
     res.json({
       msg: 'Login success',
       token,
+      username: foundUserInDB.name,
     });
   },
 };
