@@ -12,6 +12,11 @@ module.exports = {
 
     if (error) return next(error);
 
+    // const cProd = products.map((product) => ({
+    //   ...product,
+    //   img_url: `http://localhost:3000/${product.img_url}`,
+    // }));
+
     res.json(products);
   },
 
@@ -33,13 +38,14 @@ module.exports = {
 
     console.log(chalk.bgGreen.whiteBright('product ==='), product);
 
-    res.status(200).json({
-      product: {
-        ...product[0],
-        img_url: `http://localhost:3000/${product[0].img_url}`,
-      },
-      msg: 'Product fetched successfully',
-    });
+    // res.status(200).json({
+    //   product: {
+    //     ...product[0],
+    //     img_url: `http://localhost:3000/${product[0].img_url}`,
+    //   },
+    //   msg: 'Product fetched successfully',
+    // });
+    res.json(product);
   },
 
   createProduct: async (req, res, next) => {
