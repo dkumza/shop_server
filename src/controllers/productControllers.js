@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const chalk = require('chalk');
 const APIError = require('../utils/apiErrors');
 const { sqlQuarryHelper } = require('../utils/helpers');

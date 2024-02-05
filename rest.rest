@@ -6,8 +6,9 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "janina",
-  "email": "mike@bond.com",
+  "name": "admin",
+  "email": "admin@admin.qq",
+  "telephone": "866666",
   "password": "123456"
 }
 
