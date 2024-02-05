@@ -11,7 +11,7 @@ module.exports = {
     const passwordHash = bcrypt.hashSync(password, 10);
 
     const sql =
-      'INSERT INTO `customers` (`name`, `email`, `telephone`, `password`) VALUES (?, ?, ?, ?)';
+      'INSERT INTO `users` (`name`, `email`, `telephone`, `password`) VALUES (?, ?, ?, ?)';
     const [customer, error] = await sqlQuarryHelper(sql, [name, email, telephone, passwordHash]);
 
     if (error) {
@@ -32,7 +32,7 @@ module.exports = {
   login: async (req, res, next) => {
     const { email, password } = req.body;
 
-    const sql = 'SELECT * FROM customers WHERE email=?';
+    const sql = 'SELECT * FROM users WHERE email=?';
     const [customer, error] = await sqlQuarryHelper(sql, [email]);
 
     if (error) {
