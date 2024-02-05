@@ -56,7 +56,6 @@ module.exports = {
     if (error) {
       console.log(chalk.bgRed.whiteBright('error ==='), error);
       // Delete the uploaded file
-
       deleteFile(img_url);
       return next(error);
     }
@@ -98,6 +97,53 @@ module.exports = {
 
     res.status(200).json({
       msg: 'Product deleted successfully',
+    });
+  },
+
+  // TODO:
+  // delete prev foto
+  // create updated date timestamp and after update product update timestamp too
+
+  edit: async (req, res, next) => {
+    const { userID } = req;
+    const img_url = req.file.path;
+
+    if (userID !== 1) {
+      // if not "admin"
+      deleteFile(img_url);
+      return next(new APIError('Unauthorized', 400));
+    }
+
+    const { prodId } = req.params;
+    const { title, description, cat_id, price, city } = req.body;
+
+    const prodData = [title, description, cat_id, price, city, img_url];
+    console.log(chalk.bgGreen.whiteBright('prodData: '), prodData);
+
+    const sql = `
+      UPDATE products
+      SET title = ?, description = ?, cat_id = ?, price = ?, city = ?, img_url = ?
+      WHERE id = ?`;
+
+    const [product, error] = await sqlQuarryHelper(sql, [...prodData, prodId]);
+    if (error) {
+      console.log(chalk.bgRed.whiteBright('delete item error ==='), error);
+      // Delete the uploaded file
+      deleteFile(img_url);
+      return next(error);
+    }
+
+    console.log(chalk.bgGreen.whiteBright('product: '), product);
+
+    if (product.affectedRows !== 1) {
+      console.log(chalk.bgRed.whiteBright('update product error: '), product);
+      // Delete the uploaded file
+      deleteFile(img_url);
+      return next(new APIError('Something went wrong', 400));
+    }
+
+    res.status(200).json({
+      msg: 'Product updated successfully',
     });
   },
 };

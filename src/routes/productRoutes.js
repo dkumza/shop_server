@@ -21,5 +21,7 @@ productRouter.post(
 );
 // DELETE - delete product
 productRouter.delete('/products/:prodId', authToken, productControllers.delete);
+// UPDATE - edit product by ID
+productRouter.put('/products/:prodId', authToken, upload.single('image'), productControllers.edit);
 
 module.exports = productRouter;
