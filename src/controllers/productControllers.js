@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const chalk = require('chalk');
 const APIError = require('../utils/apiErrors');
 const { sqlQuarryHelper } = require('../utils/helpers');
@@ -37,7 +36,7 @@ module.exports = {
   },
 
   createProduct: async (req, res, next) => {
-    const { title, description, price, cat_id } = req.body;
+    const { title, description, price, cat_id, city } = req.body;
     const { userID } = req;
     const img_url = req.file.path;
 
@@ -47,10 +46,10 @@ module.exports = {
       return next(new APIError('Unauthorized', 400));
     }
 
-    const prodData = [title, description, price, cat_id, img_url];
-    const sql = `INSERT INTO products (title, description, price, cat_id, img_url) 
+    const prodData = [title, description, price, cat_id, img_url, city];
+    const sql = `INSERT INTO products (title, description, price, cat_id, img_url, city) 
     
-    VALUES (?,?,?,?,?)`;
+    VALUES (?,?,?,?,?,?)`;
 
     const [product, error] = await sqlQuarryHelper(sql, prodData);
 

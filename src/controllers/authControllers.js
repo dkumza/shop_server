@@ -5,13 +5,14 @@ const APIError = require('../utils/apiErrors');
 
 module.exports = {
   register: async (req, res, next) => {
-    const { name, email, password } = req.body;
+    const { name, email, telephone, password } = req.body;
 
     // bcrypt password
     const passwordHash = bcrypt.hashSync(password, 10);
 
-    const sql = 'INSERT INTO `customers` (`name`, `email`, `password`) VALUES (?, ?, ?)';
-    const [customer, error] = await sqlQuarryHelper(sql, [name, email, passwordHash]);
+    const sql =
+      'INSERT INTO `customers` (`name`, `email`, `telephone`, `password`) VALUES (?, ?, ?, ?)';
+    const [customer, error] = await sqlQuarryHelper(sql, [name, email, telephone, passwordHash]);
 
     if (error) {
       console.log(chalk.bgRed.whiteBright('register error ==='));
