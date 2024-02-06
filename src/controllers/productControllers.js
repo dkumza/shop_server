@@ -100,10 +100,6 @@ module.exports = {
     });
   },
 
-  // TODO:
-  // delete prev foto
-  // create updated date timestamp and after update product update timestamp too
-
   edit: async (req, res, next) => {
     const { userID } = req;
     const img_url = req.file.path;
@@ -114,15 +110,17 @@ module.exports = {
       return next(new APIError('Unauthorized', 400));
     }
 
+    const updatedDate = new Date();
+    console.log(updatedDate);
     const { prodId } = req.params;
-    const { title, description, cat_id, price, city } = req.body;
+    const { title, description, cat_id, price, city, lastImgUrl } = req.body;
 
-    const prodData = [title, description, cat_id, price, city, img_url];
-    console.log(chalk.bgGreen.whiteBright('prodData: '), prodData);
+    const prodData = [title, description, cat_id, price, city, img_url, updatedDate];
+    // console.log(chalk.bgGreen.whiteBright('prodData: '), prodData);
 
     const sql = `
       UPDATE products
-      SET title = ?, description = ?, cat_id = ?, price = ?, city = ?, img_url = ?
+      SET title = ?, description = ?, cat_id = ?, price = ?, city = ?, img_url = ?, updated = ?
       WHERE id = ?`;
 
     const [product, error] = await sqlQuarryHelper(sql, [...prodData, prodId]);
@@ -133,7 +131,7 @@ module.exports = {
       return next(error);
     }
 
-    console.log(chalk.bgGreen.whiteBright('product: '), product);
+    // console.log(chalk.bgGreen.whiteBright('product: '), product);
 
     if (product.affectedRows !== 1) {
       console.log(chalk.bgRed.whiteBright('update product error: '), product);
@@ -141,6 +139,9 @@ module.exports = {
       deleteFile(img_url);
       return next(new APIError('Something went wrong', 400));
     }
+
+    // delete prev image
+    deleteFile(lastImgUrl);
 
     res.status(200).json({
       msg: 'Product updated successfully',
