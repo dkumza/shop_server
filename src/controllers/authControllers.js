@@ -12,14 +12,22 @@ module.exports = {
 
     const sql =
       'INSERT INTO `users` (`name`, `email`, `telephone`, `password`) VALUES (?, ?, ?, ?)';
-    const [customer, error] = await sqlQuarryHelper(sql, [name, email, telephone, passwordHash]);
+    const [customer, error] = await sqlQuarryHelper(sql, [
+      name,
+      email,
+      telephone,
+      passwordHash,
+    ]);
 
     if (error) {
       console.log(chalk.bgRed.whiteBright('register error ==='));
       return next(error);
     }
 
-    console.log(chalk.bgRed.whiteBright('customer.affectedRows ==='), customer.affectedRows);
+    console.log(
+      chalk.bgRed.whiteBright('customer.affectedRows ==='),
+      customer.affectedRows,
+    );
 
     // created success
     if (customer.affectedRows === 1) {
@@ -62,7 +70,7 @@ module.exports = {
     res.json({
       msg: 'Login success',
       token,
-      username: foundUserInDB.name,
+      name: foundUserInDB.name,
     });
   },
 };
