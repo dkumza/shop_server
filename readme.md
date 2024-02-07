@@ -12,7 +12,7 @@ simple CRUD that handles APIs requests from SQL.
 - get all products
 - get single product
 - edit created product
-- ~~delete created product~~
+- delete created product
 
 #### ENV file
 
