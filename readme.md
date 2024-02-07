@@ -11,7 +11,7 @@ simple CRUD that handles APIs requests from SQL.
 - create new product with image upload to server using multer, fs, sharp and uuid
 - get all products
 - get single product
-- ~~edit created product~~
+- edit created product
 - ~~delete created product~~
 
 #### ENV file
