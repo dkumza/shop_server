@@ -53,7 +53,7 @@ module.exports = {
       console.log(chalk.bgRed.whiteBright('user not found ==='));
       return next(new APIError('Email not found', 400));
     }
-    console.log(customer);
+
     // user found
     const foundUserInDB = customer[0];
     console.log(chalk.bgGreen.whiteBright('foundUserInDB: '), foundUserInDB);
