@@ -32,7 +32,7 @@ module.exports = {
     // created success
     if (customer.affectedRows === 1) {
       res.status(201).json({
-        msg: 'Customer created successfully',
+        msg: 'User created successfully',
         id: customer.insertId,
       });
     }
@@ -53,7 +53,7 @@ module.exports = {
       console.log(chalk.bgRed.whiteBright('user not found ==='));
       return next(new APIError('Email not found', 400));
     }
-
+    console.log(customer);
     // user found
     const foundUserInDB = customer[0];
     console.log(chalk.bgGreen.whiteBright('foundUserInDB: '), foundUserInDB);
@@ -68,7 +68,7 @@ module.exports = {
     // if all conditions met - generate session token
     const token = jWTTokenHelper({ email: foundUserInDB.email, sub: foundUserInDB.id });
     res.json({
-      msg: 'Login success',
+      msg: `Welcome back, ${customer[0].name}!`,
       token,
       name: foundUserInDB.name,
     });
