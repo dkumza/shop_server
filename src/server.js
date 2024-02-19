@@ -5,6 +5,7 @@ const cors = require('cors');
 const productRouter = require('./routes/productRoutes');
 const { makeError } = require('./middleware/errors');
 const authRouter = require('./routes/autRoutes');
+const productCats = require('./routes/productCats');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 });
 
 //  Routes
+app.use('/api', productCats);
 app.use('/api', productRouter);
 app.use('/api', authRouter);
 
