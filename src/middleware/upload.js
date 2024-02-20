@@ -14,7 +14,8 @@ if (!fs.existsSync(dir)) {
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    // If the uploadDir property doesn't exist, create it
+    // If the uploadDir property (dir for uploading images) doesn't exist, create it
+    // - ensures that all files from the same upload are saved in the same directory.
     if (!req.uploadDir) {
       req.uploadDir = path.join(
         dir,
@@ -22,7 +23,7 @@ const storage = multer.diskStorage({
       );
     }
 
-    // Create the directory if it doesn't exist
+    // Create the directory in system - if it doesn't exist, by req.uploadDir name
     if (!fs.existsSync(req.uploadDir)) {
       fs.mkdirSync(req.uploadDir, { recursive: true });
     }
@@ -78,36 +79,43 @@ module.exports = {
   },
 
   imgQuality: (req, res, next) => {
+    // If there are no files in the request, proceed to the next middleware
     if (!req.files) {
       return next();
     }
 
+    // For each file in the request, create a promise that processes the image
     const promises = req.files.map((file) => {
+      // Get the current file path
       const filePath = file.path;
+      // Create a new file path for the processed image
       const newFilePath = path.join(
         path.dirname(filePath),
         `up_${path.basename(filePath)}`,
       );
 
+      // Use sharp to process the image
       return sharp(filePath)
-        .resize(null, 576, { withoutEnlargement: true })
-        .jpeg({ quality: 70 })
-        .toFile(newFilePath)
+        .resize(null, 576, { withoutEnlargement: true }) // Resize the image
+        .jpeg({ quality: 70 }) // Convert the image to JPEG with quality 70
+        .toFile(newFilePath) // Save the processed image to the new file path
         .then(() => {
           // Delete the original file
           fs.unlinkSync(filePath);
 
-          // Update the file path in the request
+          // Update the file path in the request to the new file path
           file.path = newFilePath;
         })
         .catch((err) => {
+          // If there's an error, log it and pass it to the next middleware
           console.error('Error processing image', err);
           next(err);
         });
     });
 
+    // Wait for all the image processing promises to complete
     Promise.all(promises)
-      .then(() => next())
-      .catch((err) => next(err));
+      .then(() => next()) // If all promises complete without errors, proceed to the next middleware
+      .catch((err) => next(err)); // If there's an error in any promise, pass it to the next middleware
   },
 };
