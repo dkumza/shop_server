@@ -36,11 +36,14 @@ module.exports = {
   },
 
   createProduct: async (req, res, next) => {
-    console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
-    // const { title, description, price, cat_id, sub_id, city } = req.body;
+    const { title, description, price, cat_id, sub_id, city } = req.body;
     // const { userID } = req;
 
     const img_urls = req.files.map((file) => file.path);
+    const img_urls_string = JSON.stringify(img_urls);
+    console.log(chalk.bgRed.whiteBright('img_urls_string: '), img_urls_string);
+
+    // console.log(chalk.bgRed.whiteBright('img_urls: '), img_urls);
 
     // if (userID !== 1) {
     //   // if not "admin"
@@ -48,33 +51,34 @@ module.exports = {
     //   return next(new APIError('Unauthorized', 400));
     // }
 
-    // const prodData = [title, description, price, cat_id, sub_id, img_url, city];
-    // console.log(chalk.bgRed.whiteBright('prodData: '), prodData);
-    // const sql = `INSERT INTO products (title, description, price, cat_id,, sub_id, img_url, city)
+    const prodData = [title, description, price, cat_id, sub_id, img_urls_string, city];
+    console.log(chalk.bgRed.whiteBright('prodData: '), prodData);
+    const sql = `INSERT INTO products (title, description, price, cat_id, sub_id, img_urls, city)
+    VALUES (?,?,?,?,?,?,?)`;
 
-    // VALUES (?,?,?,?,?,?,?)`;
+    const [product, error] = await sqlQuarryHelper(sql, prodData);
 
-    // const [product, error] = await sqlQuarryHelper(sql, prodData);
+    // ! create delete file if sql fails
 
-    // if (error) {
-    //   console.log(chalk.bgRed.whiteBright('error ==='), error);
-    //   // Delete the uploaded file
-    //   deleteFile(img_url);
-    //   return next(error);
-    // }
+    if (error) {
+      console.log(chalk.bgRed.whiteBright('error ==='), error);
+      // Delete the uploaded file
+      // deleteFile(img_urls);
+      return next(error);
+    }
 
-    // if (product.affectedRows !== 1) {
-    //   console.log(chalk.bgRed.whiteBright('product ==='), product);
-    //   // Delete the uploaded file
-    //   deleteFile(img_url);
+    if (product.affectedRows !== 1) {
+      console.log(chalk.bgRed.whiteBright('product ==='), product);
+      // Delete the uploaded file
+      // deleteFile(img_urls);
 
-    //   return next(new APIError('something went wrong', 400));
-    // }
+      return next(new APIError('something went wrong', 400));
+    }
 
-    // res.status(201).json({
-    //   id: prodData.insertId,
-    //   msg: 'New product created successfully',
-    // });
+    res.status(201).json({
+      id: prodData.insertId,
+      msg: 'Successfully Created',
+    });
   },
 
   delete: async (req, res, next) => {
