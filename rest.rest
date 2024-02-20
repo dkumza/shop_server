@@ -27,3 +27,5 @@ GET http://localhost:3000/api/products
 ### Get single product
 GET http://localhost:3000/api/products/19
 
+### Get all cities
+GET http://localhost:3000/api/cities
