@@ -14,16 +14,21 @@ if (!fs.existsSync(dir)) {
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    // Create a unique directory for each created product
-    const uploadDir = path.join(
-      dir,
-      `${new Date().toLocaleString('lt').replace(/\W/g, '_')}_${uuidv4()}`,
-    );
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    // If the uploadDir property (dir for uploading images) doesn't exist, create it
+    // - ensures that all files from the same upload are saved in the same directory.
+    if (!req.uploadDir) {
+      req.uploadDir = path.join(
+        dir,
+        `${new Date().toLocaleString('lt').replace(/\W/g, '_')}_${uuidv4()}`,
+      );
     }
 
-    cb(null, uploadDir);
+    // Create the directory in system - if it doesn't exist, by req.uploadDir name
+    if (!fs.existsSync(req.uploadDir)) {
+      fs.mkdirSync(req.uploadDir, { recursive: true });
+    }
+
+    cb(null, req.uploadDir);
   },
 
   filename(req, file, cb) {
@@ -32,7 +37,11 @@ const storage = multer.diskStorage({
     const date = new Date().toLocaleString('lt').replace(/\W/g, '_');
     // Get the original file name, remove the extension,
     // join the remaining parts with '.', and replace non-word characters with '_'
-    const originalName = file.originalname.split('.').slice(0, -1).join('.').replace(/\W/g, '_');
+    const originalName = file.originalname
+      .split('.')
+      .slice(0, -1)
+      .join('.')
+      .replace(/\W/g, '_');
     // Get the extension of the original file
     const extension = file.originalname.split('.').pop();
     const finalName = `${date}_${originalName}_${uuidv4()}.${extension}`;
@@ -48,7 +57,10 @@ module.exports = {
     },
     fileFilter(req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-        return cb(new APIError('Please upload an image file (jpg, jpeg, or png)', 400), false);
+        return cb(
+          new APIError('Please upload an image file (jpg, jpeg, or png)', 400),
+          false,
+        );
       }
       return cb(null, true);
     },
@@ -67,26 +79,43 @@ module.exports = {
   },
 
   imgQuality: (req, res, next) => {
-    const filePath = req.file.path;
-    // return correct file path to save updated img
-    const newFilePath = path.join(path.dirname(filePath), `up_${path.basename(filePath)}`);
+    // If there are no files in the request, proceed to the next middleware
+    if (!req.files) {
+      return next();
+    }
 
-    sharp(filePath)
-      .resize(null, 576, { withoutEnlargement: true })
-      .jpeg({ quality: 70 })
-      .toFile(newFilePath)
-      .then(() => {
-        // Delete the original file
-        fs.unlinkSync(filePath);
+    // For each file in the request, create a promise that processes the image
+    const promises = req.files.map((file) => {
+      // Get the current file path
+      const filePath = file.path;
+      // Create a new file path for the processed image
+      const newFilePath = path.join(
+        path.dirname(filePath),
+        `up_${path.basename(filePath)}`,
+      );
 
-        // Update the file path in the request
-        req.file.path = newFilePath;
+      // Use sharp to process the image
+      return sharp(filePath)
+        .resize(null, 576, { withoutEnlargement: true }) // Resize the image
+        .jpeg({ quality: 70 }) // Convert the image to JPEG with quality 70
+        .toFile(newFilePath) // Save the processed image to the new file path
+        .then(() => {
+          // Delete the original file
+          fs.unlinkSync(filePath);
 
-        next();
-      })
-      .catch((err) => {
-        console.error('Error processing image', err);
-        next(err);
-      });
+          // Update the file path in the request to the new file path
+          file.path = newFilePath;
+        })
+        .catch((err) => {
+          // If there's an error, log it and pass it to the next middleware
+          console.error('Error processing image', err);
+          next(err);
+        });
+    });
+
+    // Wait for all the image processing promises to complete
+    Promise.all(promises)
+      .then(() => next()) // If all promises complete without errors, proceed to the next middleware
+      .catch((err) => next(err)); // If there's an error in any promise, pass it to the next middleware
   },
 };

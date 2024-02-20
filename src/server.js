@@ -5,6 +5,8 @@ const cors = require('cors');
 const productRouter = require('./routes/productRoutes');
 const { makeError } = require('./middleware/errors');
 const authRouter = require('./routes/autRoutes');
+const productCatsRouter = require('./routes/productCatsRoutes');
+const citiesRouter = require('./routes/citiesRoutes');
 
 const app = express();
 
@@ -22,6 +24,8 @@ app.get('/', (req, res) => {
 });
 
 //  Routes
+app.use('/api', productCatsRouter);
+app.use('/api', citiesRouter);
 app.use('/api', productRouter);
 app.use('/api', authRouter);
 

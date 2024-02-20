@@ -36,41 +36,48 @@ module.exports = {
   },
 
   createProduct: async (req, res, next) => {
-    const { title, description, price, cat_id, city } = req.body;
-    const { userID } = req;
-    const img_url = req.file.path;
+    const { title, description, price, cat_id, sub_id, city } = req.body;
+    // const { userID } = req;
 
-    if (userID !== 1) {
-      // if not "admin"
-      deleteFile(img_url);
-      return next(new APIError('Unauthorized', 400));
-    }
+    const img_urls = req.files.map((file) => file.path);
+    const img_urls_string = JSON.stringify(img_urls);
+    console.log(chalk.bgRed.whiteBright('img_urls_string: '), img_urls_string);
 
-    const prodData = [title, description, price, cat_id, img_url, city];
-    const sql = `INSERT INTO products (title, description, price, cat_id, img_url, city) 
-    
-    VALUES (?,?,?,?,?,?)`;
+    // console.log(chalk.bgRed.whiteBright('img_urls: '), img_urls);
+
+    // if (userID !== 1) {
+    //   // if not "admin"
+    //   deleteFile(img_url);
+    //   return next(new APIError('Unauthorized', 400));
+    // }
+
+    const prodData = [title, description, price, cat_id, sub_id, img_urls_string, city];
+    console.log(chalk.bgRed.whiteBright('prodData: '), prodData);
+    const sql = `INSERT INTO products (title, description, price, cat_id, sub_id, img_urls, city)
+    VALUES (?,?,?,?,?,?,?)`;
 
     const [product, error] = await sqlQuarryHelper(sql, prodData);
+
+    // ! create delete file if sql fails
 
     if (error) {
       console.log(chalk.bgRed.whiteBright('error ==='), error);
       // Delete the uploaded file
-      deleteFile(img_url);
+      // deleteFile(img_urls);
       return next(error);
     }
 
     if (product.affectedRows !== 1) {
       console.log(chalk.bgRed.whiteBright('product ==='), product);
       // Delete the uploaded file
-      deleteFile(img_url);
+      // deleteFile(img_urls);
 
       return next(new APIError('something went wrong', 400));
     }
 
     res.status(201).json({
       id: prodData.insertId,
-      msg: 'New product created successfully',
+      msg: 'Successfully Created',
     });
   },
 
