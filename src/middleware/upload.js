@@ -14,16 +14,20 @@ if (!fs.existsSync(dir)) {
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    // Create a unique directory for each created product
-    const uploadDir = path.join(
-      dir,
-      `${new Date().toLocaleString('lt').replace(/\W/g, '_')}_${uuidv4()}`,
-    );
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    // If the uploadDir property doesn't exist, create it
+    if (!req.uploadDir) {
+      req.uploadDir = path.join(
+        dir,
+        `${new Date().toLocaleString('lt').replace(/\W/g, '_')}_${uuidv4()}`,
+      );
     }
 
-    cb(null, uploadDir);
+    // Create the directory if it doesn't exist
+    if (!fs.existsSync(req.uploadDir)) {
+      fs.mkdirSync(req.uploadDir, { recursive: true });
+    }
+
+    cb(null, req.uploadDir);
   },
 
   filename(req, file, cb) {
@@ -32,7 +36,11 @@ const storage = multer.diskStorage({
     const date = new Date().toLocaleString('lt').replace(/\W/g, '_');
     // Get the original file name, remove the extension,
     // join the remaining parts with '.', and replace non-word characters with '_'
-    const originalName = file.originalname.split('.').slice(0, -1).join('.').replace(/\W/g, '_');
+    const originalName = file.originalname
+      .split('.')
+      .slice(0, -1)
+      .join('.')
+      .replace(/\W/g, '_');
     // Get the extension of the original file
     const extension = file.originalname.split('.').pop();
     const finalName = `${date}_${originalName}_${uuidv4()}.${extension}`;
@@ -48,7 +56,10 @@ module.exports = {
     },
     fileFilter(req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-        return cb(new APIError('Please upload an image file (jpg, jpeg, or png)', 400), false);
+        return cb(
+          new APIError('Please upload an image file (jpg, jpeg, or png)', 400),
+          false,
+        );
       }
       return cb(null, true);
     },
@@ -67,26 +78,36 @@ module.exports = {
   },
 
   imgQuality: (req, res, next) => {
-    const filePath = req.file.path;
-    // return correct file path to save updated img
-    const newFilePath = path.join(path.dirname(filePath), `up_${path.basename(filePath)}`);
+    if (!req.files) {
+      return next();
+    }
 
-    sharp(filePath)
-      .resize(null, 576, { withoutEnlargement: true })
-      .jpeg({ quality: 70 })
-      .toFile(newFilePath)
-      .then(() => {
-        // Delete the original file
-        fs.unlinkSync(filePath);
+    const promises = req.files.map((file) => {
+      const filePath = file.path;
+      const newFilePath = path.join(
+        path.dirname(filePath),
+        `up_${path.basename(filePath)}`,
+      );
 
-        // Update the file path in the request
-        req.file.path = newFilePath;
+      return sharp(filePath)
+        .resize(null, 576, { withoutEnlargement: true })
+        .jpeg({ quality: 70 })
+        .toFile(newFilePath)
+        .then(() => {
+          // Delete the original file
+          fs.unlinkSync(filePath);
 
-        next();
-      })
-      .catch((err) => {
-        console.error('Error processing image', err);
-        next(err);
-      });
+          // Update the file path in the request
+          file.path = newFilePath;
+        })
+        .catch((err) => {
+          console.error('Error processing image', err);
+          next(err);
+        });
+    });
+
+    Promise.all(promises)
+      .then(() => next())
+      .catch((err) => next(err));
   },
 };
