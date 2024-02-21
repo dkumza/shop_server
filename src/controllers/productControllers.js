@@ -31,8 +31,8 @@ module.exports = {
       return next(new APIError('Product not found', 404));
     }
 
-    console.log(chalk.bgGreen.whiteBright('product ==='), product);
-    res.json(product);
+    console.log(chalk.bgGreen.whiteBright('product ==='), product[0]);
+    res.json(product[0]);
   },
 
   createProduct: async (req, res, next) => {
