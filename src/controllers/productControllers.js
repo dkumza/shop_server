@@ -37,46 +37,31 @@ module.exports = {
 
   createProduct: async (req, res, next) => {
     const { title, description, price, cat_id, sub_id, city } = req.body;
-    // const { userID } = req;
 
     const img_urls = req.files.map((file) => file.path);
     const img_urls_string = JSON.stringify(img_urls);
-    console.log(chalk.bgRed.whiteBright('img_urls_string: '), img_urls_string);
-
-    // console.log(chalk.bgRed.whiteBright('img_urls: '), img_urls);
-
-    // if (userID !== 1) {
-    //   // if not "admin"
-    //   deleteFile(img_url);
-    //   return next(new APIError('Unauthorized', 400));
-    // }
 
     const prodData = [title, description, price, cat_id, sub_id, img_urls_string, city];
-    console.log(chalk.bgRed.whiteBright('prodData: '), prodData);
     const sql = `INSERT INTO products (title, description, price, cat_id, sub_id, img_urls, city)
     VALUES (?,?,?,?,?,?,?)`;
-
     const [product, error] = await sqlQuarryHelper(sql, prodData);
-
-    // ! create delete file if sql fails
 
     if (error) {
       console.log(chalk.bgRed.whiteBright('error ==='), error);
-      // Delete the uploaded file
-      // deleteFile(img_urls);
+      // Delete the uploaded images on sql error
+      deleteFile();
       return next(error);
     }
 
     if (product.affectedRows !== 1) {
       console.log(chalk.bgRed.whiteBright('product ==='), product);
-      // Delete the uploaded file
-      // deleteFile(img_urls);
-
-      return next(new APIError('something went wrong', 400));
+      // Delete the uploaded images on sql error
+      deleteFile();
+      return next(new APIError('Something went wrong', 400));
     }
 
     res.status(201).json({
-      id: prodData.insertId,
+      id: product.insertId,
       msg: 'Successfully Created',
     });
   },
