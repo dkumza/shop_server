@@ -18,7 +18,15 @@ module.exports = {
   getSingleProduct: async (req, res, next) => {
     const { prodId } = req.params;
 
-    const sql = 'SELECT * FROM `products` WHERE id=?';
+    // const sql = 'SELECT * FROM `products` WHERE id=?';
+    const sql = `SELECT  P.id, P.title, P.description, P. price, P.cat_id, C.name AS cat_name, SC.name AS sub_c_name, 
+    P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone
+    FROM products AS P
+    JOIN categories AS C ON P.cat_id = C.id
+    JOIN sub_categories AS SC ON P.sub_id = SC.id
+    JOIN cities AS CT on P.city = CT.id
+    JOIN users AS U on P.user_id = U.id
+    WHERE P.id=?`;
     // make SQL quarry
     const [product, error] = await sqlQuarryHelper(sql, [prodId]);
 

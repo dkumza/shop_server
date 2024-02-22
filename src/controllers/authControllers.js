@@ -64,13 +64,14 @@ module.exports = {
     if (!bcrypt.compareSync(password, passHash)) {
       return next(new APIError('Password and email do not match', 401));
     }
-
+    console.log(chalk.bgGreen.whiteBright('foundUserInDB: '), foundUserInDB);
     // if all conditions met - generate session token
     const token = jWTTokenHelper({ email: foundUserInDB.email, sub: foundUserInDB.id });
     res.json({
       msg: `Welcome back, ${customer[0].name}!`,
       token,
       name: foundUserInDB.name,
+      userID: foundUserInDB.id,
     });
   },
 };
