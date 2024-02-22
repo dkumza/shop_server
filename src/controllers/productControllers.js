@@ -18,7 +18,15 @@ module.exports = {
   getSingleProduct: async (req, res, next) => {
     const { prodId } = req.params;
 
-    const sql = 'SELECT * FROM `products` WHERE id=?';
+    // const sql = 'SELECT * FROM `products` WHERE id=?';
+    const sql = `SELECT  P.id, P.title, P.description, P. price, P.cat_id, C.name AS cat_name, SC.name AS sub_c_name, 
+    P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone, U.id AS user_id
+    FROM products AS P
+    JOIN categories AS C ON P.cat_id = C.id
+    JOIN sub_categories AS SC ON P.sub_id = SC.id
+    JOIN cities AS CT on P.city = CT.id
+    JOIN users AS U on P.user_id = U.id
+    WHERE P.id=?`;
     // make SQL quarry
     const [product, error] = await sqlQuarryHelper(sql, [prodId]);
 
@@ -31,52 +39,37 @@ module.exports = {
       return next(new APIError('Product not found', 404));
     }
 
-    console.log(chalk.bgGreen.whiteBright('product ==='), product);
-    res.json(product);
+    console.log(chalk.bgGreen.whiteBright('product ==='), product[0]);
+    res.json(product[0]);
   },
 
   createProduct: async (req, res, next) => {
     const { title, description, price, cat_id, sub_id, city } = req.body;
-    // const { userID } = req;
 
     const img_urls = req.files.map((file) => file.path);
     const img_urls_string = JSON.stringify(img_urls);
-    console.log(chalk.bgRed.whiteBright('img_urls_string: '), img_urls_string);
-
-    // console.log(chalk.bgRed.whiteBright('img_urls: '), img_urls);
-
-    // if (userID !== 1) {
-    //   // if not "admin"
-    //   deleteFile(img_url);
-    //   return next(new APIError('Unauthorized', 400));
-    // }
 
     const prodData = [title, description, price, cat_id, sub_id, img_urls_string, city];
-    console.log(chalk.bgRed.whiteBright('prodData: '), prodData);
     const sql = `INSERT INTO products (title, description, price, cat_id, sub_id, img_urls, city)
     VALUES (?,?,?,?,?,?,?)`;
-
     const [product, error] = await sqlQuarryHelper(sql, prodData);
-
-    // ! create delete file if sql fails
 
     if (error) {
       console.log(chalk.bgRed.whiteBright('error ==='), error);
-      // Delete the uploaded file
-      // deleteFile(img_urls);
+      // Delete the uploaded images on sql error
+      deleteFile();
       return next(error);
     }
 
     if (product.affectedRows !== 1) {
       console.log(chalk.bgRed.whiteBright('product ==='), product);
-      // Delete the uploaded file
-      // deleteFile(img_urls);
-
-      return next(new APIError('something went wrong', 400));
+      // Delete the uploaded images on sql error
+      deleteFile();
+      return next(new APIError('Something went wrong', 400));
     }
 
     res.status(201).json({
-      id: prodData.insertId,
+      id: product.insertId,
       msg: 'Successfully Created',
     });
   },

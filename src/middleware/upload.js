@@ -12,8 +12,11 @@ if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
 
+let createdDirForUpload; // directory name placeholder for new uploaded images (changes each upload)
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
+    createdDirForUpload = req.uploadDir;
     // If the uploadDir property (dir for uploading images) doesn't exist, create it
     // - ensures that all files from the same upload are saved in the same directory.
     if (!req.uploadDir) {
@@ -26,6 +29,7 @@ const storage = multer.diskStorage({
     // Create the directory in system - if it doesn't exist, by req.uploadDir name
     if (!fs.existsSync(req.uploadDir)) {
       fs.mkdirSync(req.uploadDir, { recursive: true });
+      createdDirForUpload = req.uploadDir;
     }
 
     cb(null, req.uploadDir);
@@ -66,8 +70,9 @@ module.exports = {
     },
   }),
 
-  deleteFile: (filePath) => {
-    const parentDir = path.dirname(filePath);
+  deleteFile: () => {
+    const parentDir = path.dirname(createdDirForUpload);
+    console.log('createdDirForUpload: ', createdDirForUpload);
 
     fs.rm(parentDir, { recursive: true, force: true }, (err) => {
       if (err) {
