@@ -6,7 +6,9 @@ const productCatControllers = require('../controllers/productCatControllers');
 // ROUTES //
 // GET all categories
 productCatsRouter.get('/categories', productCatControllers.getCategories);
-// GET all sub categories, by categories ID
-productCatsRouter.get('/sub-categories/:catID', productCatControllers.getSubCategories);
+// GET all subcategories
+productCatsRouter.get('/sub-categories', productCatControllers.getAllSubCategories);
+// GET single sub category, by category ID
+productCatsRouter.get('/sub-category/:catID', productCatControllers.getSubCategory);
 
 module.exports = productCatsRouter;
