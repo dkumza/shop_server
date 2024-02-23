@@ -19,7 +19,7 @@ module.exports = {
     const { prodId } = req.params;
 
     // const sql = 'SELECT * FROM `products` WHERE id=?';
-    const sql = `SELECT  P.id, P.title, P.description, P. price, P.cat_id, C.name AS cat_name, SC.name AS sub_c_name, 
+    const sql = `SELECT  P.id, P.title, P.description, P. price, P.cat_id, C.name AS cat_name, SC.id AS sub_id, SC.name AS sub_c_name, 
     P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone, U.id AS user_id
     FROM products AS P
     JOIN categories AS C ON P.cat_id = C.id

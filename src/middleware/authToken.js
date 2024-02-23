@@ -18,6 +18,6 @@ module.exports = function authToken(req, res, next) {
     next();
   } catch (error) {
     console.log(chalk.bgRed.whiteBright('error: '), error);
-    res.status(401).json('Unauthorized');
+    res.status(401).json({ msg: 'Unauthorized' });
   }
 };

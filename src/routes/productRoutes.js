@@ -10,7 +10,7 @@ const authToken = require('../middleware/authToken');
 // GET all products
 productRouter.get('/products', productControllers.getAllProducts);
 // GET single product
-productRouter.get('/product/:prodId', productControllers.getSingleProduct);
+productRouter.get('/product/:prodId', authToken, productControllers.getSingleProduct);
 // POST - create new product
 productRouter.post(
   '/products',
