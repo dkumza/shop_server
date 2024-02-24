@@ -39,7 +39,6 @@ module.exports = {
       return next(new APIError('Product not found', 404));
     }
 
-    console.log(chalk.bgGreen.whiteBright('product ==='), product[0]);
     res.json(product[0]);
   },
 
@@ -117,7 +116,6 @@ module.exports = {
   },
 
   edit: async (req, res, next) => {
-    console.log(chalk.bgGreen.whiteBright('req: '), req.body);
     let goodImgUrls;
     const { userID } = req; // user ID from token
     const { prodId } = req.params;
@@ -167,8 +165,6 @@ module.exports = {
       deleteFile();
       return next(error);
     }
-
-    // // console.log(chalk.bgGreen.whiteBright('product: '), product);
 
     if (product.affectedRows !== 1) {
       console.log(chalk.bgRed.whiteBright('update product error: '), product);

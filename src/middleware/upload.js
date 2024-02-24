@@ -71,8 +71,6 @@ module.exports = {
   }),
 
   deleteFile: (folder) => {
-    console.log('createdDirForUpload: ', createdDirForUpload);
-
     if (!folder) {
       fs.rm(createdDirForUpload, { recursive: true, force: true }, (err) => {
         if (err) {
