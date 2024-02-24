@@ -117,8 +117,8 @@ module.exports = {
   },
 
   edit: async (req, res, next) => {
+    console.log(chalk.bgGreen.whiteBright('req: '), req.body);
     let goodImgUrls;
-    console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
     const { userID } = req; // user ID from token
     const { prodId } = req.params;
 
@@ -162,7 +162,7 @@ module.exports = {
 
     const [product, error] = await sqlQuarryHelper(sql, [...prodData, prodId]);
     if (error) {
-      console.log(chalk.bgRed.whiteBright('delete item error ==='), error);
+      console.log(chalk.bgRed.whiteBright('update item error ==='), error);
       // Delete the uploaded file
       deleteFile();
       return next(error);
@@ -177,8 +177,8 @@ module.exports = {
       return next(new APIError('Something went wrong', 400));
     }
 
-    // delete prev image
-    deleteFile(img_old_url);
+    // delete prev image if uploaded on edit
+    !req.body.img_urls && deleteFile(img_old_url);
 
     res.status(200).json({
       msg: 'Product updated successfully',
