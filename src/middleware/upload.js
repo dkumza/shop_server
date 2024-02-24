@@ -70,17 +70,27 @@ module.exports = {
     },
   }),
 
-  deleteFile: () => {
-    const parentDir = path.dirname(createdDirForUpload);
+  deleteFile: (folder) => {
     console.log('createdDirForUpload: ', createdDirForUpload);
 
-    fs.rm(parentDir, { recursive: true, force: true }, (err) => {
-      if (err) {
-        console.error(`Failed to delete the directory: ${err}`);
-      } else {
-        console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
-      }
-    });
+    if (!folder) {
+      fs.rm(createdDirForUpload, { recursive: true, force: true }, (err) => {
+        if (err) {
+          console.error(`Failed to delete the directory: ${err}`);
+        } else {
+          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
+        }
+      });
+    }
+    if (folder) {
+      fs.rm(folder, { recursive: true, force: true }, (err) => {
+        if (err) {
+          console.error(`Failed to delete the directory: ${err}`);
+        } else {
+          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
+        }
+      });
+    }
   },
 
   imgQuality: (req, res, next) => {

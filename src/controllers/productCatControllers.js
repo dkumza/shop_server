@@ -28,7 +28,6 @@ module.exports = {
       return next(new APIError('SubCategories not found', 404));
     }
 
-    console.log(chalk.bgGreen.whiteBright('subCategories ==='), subCategories);
     res.json(subCategories);
   },
 
@@ -48,7 +47,6 @@ module.exports = {
       return next(new APIError('SubCategories not found', 404));
     }
 
-    console.log(chalk.bgGreen.whiteBright('subCategories ==='), subCategories);
     res.json(subCategories);
   },
 };

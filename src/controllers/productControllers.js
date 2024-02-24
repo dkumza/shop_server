@@ -44,14 +44,30 @@ module.exports = {
   },
 
   createProduct: async (req, res, next) => {
-    const { title, description, price, cat_id, sub_id, city } = req.body;
+    const { userID } = req; // user ID from token
+    const { user_id, title, description, price, cat_id, sub_id, city } = req.body;
+
+    if (userID !== +user_id) {
+      // if not "admin"
+      deleteFile();
+      return next(new APIError('Unauthorized', 400));
+    }
 
     const img_urls = req.files.map((file) => file.path);
     const img_urls_string = JSON.stringify(img_urls);
 
-    const prodData = [title, description, price, cat_id, sub_id, img_urls_string, city];
-    const sql = `INSERT INTO products (title, description, price, cat_id, sub_id, img_urls, city)
-    VALUES (?,?,?,?,?,?,?)`;
+    const prodData = [
+      title,
+      description,
+      price,
+      cat_id,
+      sub_id,
+      img_urls_string,
+      user_id,
+      city,
+    ];
+    const sql = `INSERT INTO products (title, description, price, cat_id, sub_id, img_urls, user_id, city)
+    VALUES (?,?,?,?,?,?,?,?)`;
     const [product, error] = await sqlQuarryHelper(sql, prodData);
 
     if (error) {
@@ -101,47 +117,68 @@ module.exports = {
   },
 
   edit: async (req, res, next) => {
-    const { userID } = req;
-    const img_url = req.file.path;
+    console.log(chalk.bgGreen.whiteBright('req: '), req.body);
+    let goodImgUrls;
+    const { userID } = req; // user ID from token
+    const { prodId } = req.params;
 
-    if (userID !== 1) {
-      // if not "admin"
-      deleteFile(img_url);
+    // check where images exists, if no updated images it will be at req.body
+    if (req.body.img_urls) {
+      goodImgUrls = req.body.img_urls;
+      // and if updated images will be at req.files (because sended with FormData())
+    } else {
+      const img_urls = req.files.map((file) => file.path);
+      goodImgUrls = JSON.stringify(img_urls);
+    }
+
+    const { title, description, price, cat_id, sub_id, city, user_id, img_old_url } =
+      req.body;
+
+    // check if user ID matched from FE with token
+    if (userID !== +user_id) {
+      // if id's do not match - delete uploads and return error
+      deleteFile(img_old_url);
       return next(new APIError('Unauthorized', 400));
     }
 
-    const updatedDate = new Date();
-    console.log(updatedDate);
-    const { prodId } = req.params;
-    const { title, description, cat_id, price, city, lastImgUrl } = req.body;
+    const updatedDate = new Date(); // date for update - updated date
 
-    const prodData = [title, description, cat_id, price, city, img_url, updatedDate];
-    // console.log(chalk.bgGreen.whiteBright('prodData: '), prodData);
+    // needed data from FE
+    const prodData = [
+      title,
+      description,
+      cat_id,
+      sub_id,
+      price,
+      city,
+      goodImgUrls,
+      updatedDate,
+    ];
 
     const sql = `
       UPDATE products
-      SET title = ?, description = ?, cat_id = ?, price = ?, city = ?, img_url = ?, updated = ?
+      SET title = ?, description = ?, cat_id = ?, sub_id = ?, price = ?, city = ?, img_urls = ?, updated = ?
       WHERE id = ?`;
 
     const [product, error] = await sqlQuarryHelper(sql, [...prodData, prodId]);
     if (error) {
-      console.log(chalk.bgRed.whiteBright('delete item error ==='), error);
+      console.log(chalk.bgRed.whiteBright('update item error ==='), error);
       // Delete the uploaded file
-      deleteFile(img_url);
+      deleteFile();
       return next(error);
     }
 
-    // console.log(chalk.bgGreen.whiteBright('product: '), product);
+    // // console.log(chalk.bgGreen.whiteBright('product: '), product);
 
     if (product.affectedRows !== 1) {
       console.log(chalk.bgRed.whiteBright('update product error: '), product);
       // Delete the uploaded file
-      deleteFile(img_url);
+      deleteFile();
       return next(new APIError('Something went wrong', 400));
     }
 
-    // delete prev image
-    deleteFile(lastImgUrl);
+    // delete prev image if uploaded on edit
+    !req.body.img_urls && deleteFile(img_old_url);
 
     res.status(200).json({
       msg: 'Product updated successfully',
