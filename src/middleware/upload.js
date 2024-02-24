@@ -70,19 +70,6 @@ module.exports = {
     },
   }),
 
-  // deleteFile: () => {
-  //   const parentDir = path.dirname(createdDirForUpload);
-  //   console.log('createdDirForUpload: ', createdDirForUpload);
-
-  //   fs.rm(parentDir, { recursive: true, force: true }, (err) => {
-  //     if (err) {
-  //       console.error(`Failed to delete the directory: ${err}`);
-  //     } else {
-  //       console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
-  //     }
-  //   });
-  // },
-
   deleteFile: (folder) => {
     console.log('createdDirForUpload: ', createdDirForUpload);
 
