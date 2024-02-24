@@ -14,18 +14,19 @@ productRouter.get('/product/:prodId', authToken, productControllers.getSinglePro
 // POST - create new product
 productRouter.post(
   '/products',
-  // authToken,
+  authToken,
   upload.array('image', 4),
   imgQuality,
   productControllers.createProduct,
 );
 // DELETE - delete product
-productRouter.delete('/products/:prodId', authToken, productControllers.delete);
+productRouter.delete('/product/:prodId', authToken, productControllers.delete);
 // UPDATE - edit product by ID
 productRouter.put(
-  '/products/:prodId',
+  '/product/:prodId',
   authToken,
-  upload.single('image'),
+  upload.array('image', 4),
+  imgQuality,
   productControllers.edit,
 );
 
