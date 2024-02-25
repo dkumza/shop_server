@@ -90,11 +90,12 @@ module.exports = {
   },
 
   delete: async (req, res, next) => {
+    console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
     const { prodId } = req.params;
     const { userID } = req;
+    const { productUserID } = req.body;
 
-    if (userID !== 1) {
-      // if not "admin"
+    if (userID !== productUserID) {
       return next(new APIError('Unauthorized', 400));
     }
 
