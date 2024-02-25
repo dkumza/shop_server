@@ -85,7 +85,7 @@ module.exports = {
 
     res.status(201).json({
       id: product.insertId,
-      msg: 'Successfully Created',
+      msg: 'Successfully created',
     });
   },
 
@@ -119,23 +119,25 @@ module.exports = {
     let goodImgUrls;
     const { userID } = req; // user ID from token
     const { prodId } = req.params;
+    const { title, description, price, cat_id, sub_id, city, user_id, img_old_url } =
+      req.body;
+    console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
 
     // check where images exists, if no updated images it will be at req.body
     if (req.body.img_urls) {
       goodImgUrls = req.body.img_urls;
+      console.log('goodImgUrls: ', goodImgUrls);
+
       // and if updated images will be at req.files (because sended with FormData())
     } else {
       const img_urls = req.files.map((file) => file.path);
       goodImgUrls = JSON.stringify(img_urls);
     }
 
-    const { title, description, price, cat_id, sub_id, city, user_id, img_old_url } =
-      req.body;
-
     // check if user ID matched from FE with token
     if (userID !== +user_id) {
       // if id's do not match - delete uploads and return error
-      deleteFile(img_old_url);
+      deleteFile();
       return next(new APIError('Unauthorized', 400));
     }
 

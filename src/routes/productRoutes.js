@@ -2,7 +2,7 @@ const express = require('express');
 
 const productRouter = express.Router();
 const productControllers = require('../controllers/productControllers');
-const { upload, imgQuality } = require('../middleware/upload');
+const { upload, imgQuality, delFolderOnLimitSizeError } = require('../middleware/upload');
 const authToken = require('../middleware/authToken');
 
 // ROUTES
@@ -26,6 +26,7 @@ productRouter.put(
   '/product/:prodId',
   authToken,
   upload.array('image', 4),
+  delFolderOnLimitSizeError,
   imgQuality,
   productControllers.edit,
 );

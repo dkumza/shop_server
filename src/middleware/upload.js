@@ -17,6 +17,7 @@ let createdDirForUpload; // directory name placeholder for new uploaded images (
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     createdDirForUpload = req.uploadDir;
+    console.log(chalk.bgGreen.whiteBright('createdDirForUpload: '), createdDirForUpload);
     // If the uploadDir property (dir for uploading images) doesn't exist, create it
     // - ensures that all files from the same upload are saved in the same directory.
     if (!req.uploadDir) {
@@ -28,6 +29,7 @@ const storage = multer.diskStorage({
 
     // Create the directory in system - if it doesn't exist, by req.uploadDir name
     if (!fs.existsSync(req.uploadDir)) {
+      console.log(chalk.bgRed.whiteBright('req.uploadDir: '), req.uploadDir);
       fs.mkdirSync(req.uploadDir, { recursive: true });
       createdDirForUpload = req.uploadDir;
     }
@@ -76,7 +78,7 @@ module.exports = {
         if (err) {
           console.error(`Failed to delete the directory: ${err}`);
         } else {
-          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
+          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully 1'));
         }
       });
     }
@@ -85,9 +87,25 @@ module.exports = {
         if (err) {
           console.error(`Failed to delete the directory: ${err}`);
         } else {
-          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
+          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully 2'));
         }
       });
+    }
+  },
+
+  delFolderOnLimitSizeError: (error, req, res, next) => {
+    if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+      // If the file is too large, delete the directory
+      fs.rm(req.uploadDir, { recursive: true }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send('An error occurred while deleting the directory');
+        } else {
+          res.status(400).send('File is too large');
+        }
+      });
+    } else {
+      next(error);
     }
   },
 
