@@ -24,11 +24,6 @@ module.exports = {
       return next(error);
     }
 
-    console.log(
-      chalk.bgRed.whiteBright('customer.affectedRows ==='),
-      customer.affectedRows,
-    );
-
     // created success
     if (customer.affectedRows === 1) {
       res.status(201).json({
@@ -56,7 +51,6 @@ module.exports = {
 
     // user found
     const foundUserInDB = customer[0];
-    console.log(chalk.bgGreen.whiteBright('foundUserInDB: '), foundUserInDB);
 
     const passHash = foundUserInDB.password;
 
@@ -64,7 +58,6 @@ module.exports = {
     if (!bcrypt.compareSync(password, passHash)) {
       return next(new APIError('Password and email do not match', 401));
     }
-    console.log(chalk.bgGreen.whiteBright('foundUserInDB: '), foundUserInDB);
     // if all conditions met - generate session token
     const token = jWTTokenHelper({ email: foundUserInDB.email, sub: foundUserInDB.id });
     res.json({

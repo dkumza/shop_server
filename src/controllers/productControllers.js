@@ -20,7 +20,7 @@ module.exports = {
 
     // const sql = 'SELECT * FROM `products` WHERE id=?';
     const sql = `SELECT  P.id, P.title, P.description, P. price, P.cat_id, C.name AS cat_name, SC.id AS sub_id, SC.name AS sub_c_name, 
-    P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone, U.id AS user_id
+    P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone, U.id AS user_id, P.isDeleted
     FROM products AS P
     JOIN categories AS C ON P.cat_id = C.id
     JOIN sub_categories AS SC ON P.sub_id = SC.id
@@ -39,7 +39,6 @@ module.exports = {
       return next(new APIError('Product not found', 404));
     }
 
-    console.log(chalk.bgGreen.whiteBright('product ==='), product[0]);
     res.json(product[0]);
   },
 
@@ -86,21 +85,22 @@ module.exports = {
 
     res.status(201).json({
       id: product.insertId,
-      msg: 'Successfully Created',
+      msg: 'Successfully created',
     });
   },
 
   delete: async (req, res, next) => {
+    console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
     const { prodId } = req.params;
     const { userID } = req;
+    const { productUserID, isDeleted } = req.body;
 
-    if (userID !== 1) {
-      // if not "admin"
+    if (userID !== productUserID) {
       return next(new APIError('Unauthorized', 400));
     }
 
-    const sql = 'UPDATE `products` SET isDeleted=1 WHERE id=? LIMIT 1';
-    const [product, error] = await sqlQuarryHelper(sql, [prodId]);
+    const sql = `UPDATE products SET isDeleted=? WHERE id=? LIMIT 1`;
+    const [product, error] = await sqlQuarryHelper(sql, [isDeleted, prodId]);
     if (error) {
       console.log(chalk.bgRed.whiteBright('delete item error ==='), error);
       return next(error);
@@ -112,32 +112,33 @@ module.exports = {
     }
 
     res.status(200).json({
-      msg: 'Product deleted successfully',
+      msg: isDeleted ? 'Product deleted successfully' : 'Product restored successfully',
     });
   },
 
   edit: async (req, res, next) => {
-    console.log(chalk.bgGreen.whiteBright('req: '), req.body);
     let goodImgUrls;
     const { userID } = req; // user ID from token
     const { prodId } = req.params;
+    const { title, description, price, cat_id, sub_id, city, user_id, img_old_url } =
+      req.body;
+    console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
 
     // check where images exists, if no updated images it will be at req.body
     if (req.body.img_urls) {
       goodImgUrls = req.body.img_urls;
+      console.log('goodImgUrls: ', goodImgUrls);
+
       // and if updated images will be at req.files (because sended with FormData())
     } else {
       const img_urls = req.files.map((file) => file.path);
       goodImgUrls = JSON.stringify(img_urls);
     }
 
-    const { title, description, price, cat_id, sub_id, city, user_id, img_old_url } =
-      req.body;
-
     // check if user ID matched from FE with token
     if (userID !== +user_id) {
       // if id's do not match - delete uploads and return error
-      deleteFile(img_old_url);
+      deleteFile();
       return next(new APIError('Unauthorized', 400));
     }
 
@@ -167,8 +168,6 @@ module.exports = {
       deleteFile();
       return next(error);
     }
-
-    // // console.log(chalk.bgGreen.whiteBright('product: '), product);
 
     if (product.affectedRows !== 1) {
       console.log(chalk.bgRed.whiteBright('update product error: '), product);

@@ -71,14 +71,12 @@ module.exports = {
   }),
 
   deleteFile: (folder) => {
-    console.log('createdDirForUpload: ', createdDirForUpload);
-
     if (!folder) {
       fs.rm(createdDirForUpload, { recursive: true, force: true }, (err) => {
         if (err) {
           console.error(`Failed to delete the directory: ${err}`);
         } else {
-          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
+          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully 1'));
         }
       });
     }
@@ -87,9 +85,25 @@ module.exports = {
         if (err) {
           console.error(`Failed to delete the directory: ${err}`);
         } else {
-          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully'));
+          console.log(chalk.bgGreen.whiteBright('Directory deleted successfully 2'));
         }
       });
+    }
+  },
+
+  delFolderOnLimitSizeError: (error, req, res, next) => {
+    if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+      // If the file is too large, delete the directory
+      fs.rm(req.uploadDir, { recursive: true }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send('An error occurred while deleting the directory');
+        } else {
+          res.status(400).send({ msg: 'Image(s) is too large' });
+        }
+      });
+    } else {
+      next(error);
     }
   },
 
