@@ -20,7 +20,7 @@ module.exports = {
 
     // const sql = 'SELECT * FROM `products` WHERE id=?';
     const sql = `SELECT  P.id, P.title, P.description, P. price, P.cat_id, C.name AS cat_name, SC.id AS sub_id, SC.name AS sub_c_name, 
-    P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone, U.id AS user_id
+    P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone, U.id AS user_id, P.isDeleted
     FROM products AS P
     JOIN categories AS C ON P.cat_id = C.id
     JOIN sub_categories AS SC ON P.sub_id = SC.id
