@@ -16,6 +16,7 @@ productRouter.post(
   '/products',
   authToken,
   upload.array('image', 4),
+  delFolderOnLimitSizeError,
   imgQuality,
   productControllers.createProduct,
 );
