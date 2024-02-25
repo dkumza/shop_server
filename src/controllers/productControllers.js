@@ -93,14 +93,14 @@ module.exports = {
     console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
     const { prodId } = req.params;
     const { userID } = req;
-    const { productUserID } = req.body;
+    const { productUserID, isDeleted } = req.body;
 
     if (userID !== productUserID) {
       return next(new APIError('Unauthorized', 400));
     }
 
-    const sql = 'UPDATE `products` SET isDeleted=1 WHERE id=? LIMIT 1';
-    const [product, error] = await sqlQuarryHelper(sql, [prodId]);
+    const sql = `UPDATE products SET isDeleted=? WHERE id=? LIMIT 1`;
+    const [product, error] = await sqlQuarryHelper(sql, [isDeleted, prodId]);
     if (error) {
       console.log(chalk.bgRed.whiteBright('delete item error ==='), error);
       return next(error);
@@ -112,7 +112,7 @@ module.exports = {
     }
 
     res.status(200).json({
-      msg: 'Product deleted successfully',
+      msg: isDeleted ? 'Product deleted successfully' : 'Product restored successfully',
     });
   },
 
