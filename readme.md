@@ -8,11 +8,11 @@ simple CRUD that handles APIs requests from SQL.
 
 - register user, with name, email and password. Password is hashed
 - login user with validation and session token
-- create new product with image upload to server using multer, fs, sharp and uuid
+- create new product with image upload (up to 4 images) to server using multer, fs, sharp and uuid
 - get all products
 - get single product
 - edit created product
-- delete created product
+- delete/restore created product
 
 #### ENV file
 
