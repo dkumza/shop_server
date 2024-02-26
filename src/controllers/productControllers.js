@@ -6,8 +6,6 @@ const { deleteFile } = require('../middleware/upload');
 module.exports = {
   getAllProducts: async (req, res, next) => {
     const sql = 'SELECT * FROM `products` WHERE isDeleted=0';
-
-    // make SQL quarry
     const [products, error] = await sqlQuarryHelper(sql);
 
     if (error) return next(error);

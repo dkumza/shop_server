@@ -28,4 +28,4 @@ To install the application, follow these steps:
 
 1. Clone the repository.
 2. Navigate to the `shop_server` folder and run `npm install` to install the server dependencies.
-3. ~~Import "shopping.sql" to your local SQL server.~~
+3. Import `shopping.sql` from `data` folder to your local SQL server.
