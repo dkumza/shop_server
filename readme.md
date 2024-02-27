@@ -2,6 +2,8 @@
 
 created with node, express, bcryptjs, cors, dotenv, jsonwebtoken, morgan, multer, mysql2, sharp and more...
 
+created with node, express, bcryptjs, cors, dotenv, jsonwebtoken, morgan, multer, mysql2, sharp and more...
+
 for latest version check [dev brach](https://github.com/dkumza/shop_server/tree/dev) (not stable!!!) <br>
 
 simple CRUD that handles APIs requests from SQL.

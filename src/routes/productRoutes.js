@@ -31,5 +31,6 @@ productRouter.put(
   imgQuality,
   productControllers.edit,
 );
+productRouter.get('/personal/:userID', authToken, productControllers.getByUserID);
 
 module.exports = productRouter;

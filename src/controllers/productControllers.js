@@ -6,8 +6,6 @@ const { deleteFile } = require('../middleware/upload');
 module.exports = {
   getAllProducts: async (req, res, next) => {
     const sql = 'SELECT * FROM `products` WHERE isDeleted=0';
-
-    // make SQL quarry
     const [products, error] = await sqlQuarryHelper(sql);
 
     if (error) return next(error);
@@ -182,5 +180,21 @@ module.exports = {
     res.status(200).json({
       msg: 'Product updated successfully',
     });
+  },
+
+  getByUserID: async (req, res, next) => {
+    const { userID } = req; // user ID from token
+    const { userID: userFromFE } = req.params;
+    console.log(chalk.bgGreen.whiteBright('userID: '), userID);
+    console.log(chalk.bgGreen.whiteBright('userFromFE: '), userFromFE);
+    // const { title, description, price, cat_id, sub_id, city, user_id, img_old_url } =
+    //   req.body;
+
+    const sql = 'SELECT * FROM `products` WHERE user_id=?';
+    const [products, error] = await sqlQuarryHelper(sql, [userFromFE]);
+
+    if (error) return next(error);
+
+    res.json(products);
   },
 };
