@@ -29,3 +29,16 @@ GET http://localhost:3000/api/products/45
 
 ### Get all cities
 GET http://localhost:3000/api/cities
+
+### Get single product comments
+GET http://localhost:3000/api/comments/1
+
+### create new comment
+POST http://localhost:3000/api/comments
+Content-Type: application/json
+
+{
+  "productID": 1,
+  "content": "good comment 1",
+  "userID": 1
+}
