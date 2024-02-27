@@ -5,13 +5,13 @@ const { sqlQuarryHelper } = require('../utils/helpers');
 module.exports = {
   createComments: async (req, res, next) => {
     const { userID } = req; // user ID from token
-    const { prodId, content, userID: user_id } = req.body;
+    const { productID, content, userID: user_id } = req.body;
 
-    if (userID !== +user_id) {
-      return next(new APIError('Unauthorized', 400));
-    }
+    // if (userID !== +user_id) {
+    //   return next(new APIError('Unauthorized', 400));
+    // }
 
-    const commData = [];
+    const commData = [productID, content, user_id];
     const sql = `INSERT INTO comments (productID, content, userID)
     VALUES (?,?,?)`;
     const [comment, error] = await sqlQuarryHelper(sql, commData);
@@ -33,7 +33,10 @@ module.exports = {
   },
   getComments: async (req, res, next) => {
     const { prodId } = req.params;
-    const sql = 'SELECT * FROM `comments` WHERE productID=?';
+    const sql = `SELECT 
+                 C.id, C.content, C.created, U.name AS userName 
+                 FROM comments AS C
+                 JOIN users as U WHERE C.userID=U.id and C.productID=?`;
 
     // make SQL quarry
     const [comments, error] = await sqlQuarryHelper(sql, [prodId]);
