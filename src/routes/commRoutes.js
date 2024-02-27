@@ -8,6 +8,8 @@ const commControllers = require('../controllers/commControllers');
 
 // GET create single comment
 commRoutes.post('/comments/:prodId', authToken, commControllers.createComments);
+// DELETE delete single comment by comment id
+commRoutes.delete('/comments/:commId', authToken, commControllers.deleteComm);
 // GET single comment by product id
 commRoutes.get('/comments/:prodId', commControllers.getComments);
 

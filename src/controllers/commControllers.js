@@ -32,6 +32,33 @@ module.exports = {
       msg: 'Successfully created',
     });
   },
+  deleteComm: async (req, res, next) => {
+    const { userID } = req;
+    const { commId } = req.params;
+    const { userID: productUserID } = req.body;
+    console.log(chalk.bgGreen.whiteBright('commID: '), req.params);
+
+    if (+userID !== +productUserID) {
+      return next(new APIError('Unauthorized', 400));
+    }
+
+    const sql = `DELETE FROM comments WHERE id=? LIMIT 1`;
+    const [comment, error] = await sqlQuarryHelper(sql, [commId]);
+    if (error) {
+      console.log(chalk.bgRed.whiteBright('delete item error ==='), error);
+      return next(error);
+    }
+
+    if (comment.affectedRows !== 1) {
+      console.log(chalk.bgRed.whiteBright('delete comment error: '), comment);
+      return next(new APIError('Something went wrong', 400));
+    }
+
+    res.status(200).json({
+      msg: 'Comment deleted successfully',
+    });
+  },
+
   getComments: async (req, res, next) => {
     const { prodId } = req.params;
     const sql = `SELECT 
