@@ -1,4 +1,6 @@
-# server side for shopping app
+# server side for shopping app /w express.js
+
+created with node, express, bcryptjs, cors, dotenv, jsonwebtoken, morgan, multer, mysql2, sharp and more...
 
 created with node, express, bcryptjs, cors, dotenv, jsonwebtoken, morgan, multer, mysql2, sharp and more...
 
@@ -10,7 +12,7 @@ simple CRUD that handles APIs requests from SQL.
 
 - register user. Password is hashed
 - login user with validation and session token
-- create new product with image upload to server using multer, fs, sharp and uuid
+- create new product with image upload (up to 4 images) to server using multer, fs, sharp and uuid
 - get all products
 - get single product
 - edit created product
