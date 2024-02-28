@@ -93,7 +93,7 @@ module.exports = {
     const { userID } = req;
     const { productUserID, isDeleted } = req.body;
 
-    if (userID !== productUserID) {
+    if (userID !== productUserID || userID !== 1) {
       return next(new APIError('Unauthorized', 400));
     }
 
