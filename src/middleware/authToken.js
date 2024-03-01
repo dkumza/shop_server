@@ -10,7 +10,7 @@ module.exports = function authToken(req, res, next) {
   if (!prepForToken) throw new Error('Unauthorized');
   try {
     const token = prepForToken.split(' ')[1];
-    console.log(chalk.bgRed.whiteBright('token: '), token);
+    // console.log(chalk.bgRed.whiteBright('token: '), token);
     if (!token) throw new Error('Unauthorized token');
     const decoded = jwt.verify(token, jwtSecret);
     req.userID = decoded.sub;
