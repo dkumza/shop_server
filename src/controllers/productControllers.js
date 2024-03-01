@@ -125,7 +125,6 @@ module.exports = {
     // check where images exists, if no updated images it will be at req.body
     if (req.body.img_urls) {
       goodImgUrls = req.body.img_urls;
-      console.log('goodImgUrls: ', goodImgUrls);
 
       // and if updated images will be at req.files (because sended with FormData())
     } else {
@@ -133,8 +132,10 @@ module.exports = {
       goodImgUrls = JSON.stringify(img_urls);
     }
 
-    // check if user ID matched from FE with token
-    if (userID !== +user_id) {
+    console.log(chalk.bgGreen.whiteBright('userID: '), userID);
+
+    // check if user ID matched from FE with token or is not admin
+    if (+userID !== +user_id && userID !== 1) {
       // if id's do not match - delete uploads and return error
       deleteFile();
       return next(new APIError('Unauthorized', 400));
