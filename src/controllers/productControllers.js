@@ -120,7 +120,6 @@ module.exports = {
     const { prodId } = req.params;
     const { title, description, price, cat_id, sub_id, city, user_id, img_old_url } =
       req.body;
-    console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
 
     // check where images exists, if no updated images it will be at req.body
     if (req.body.img_urls) {
@@ -131,8 +130,6 @@ module.exports = {
       const img_urls = req.files.map((file) => file.path);
       goodImgUrls = JSON.stringify(img_urls);
     }
-
-    console.log(chalk.bgGreen.whiteBright('userID: '), userID);
 
     // check if user ID matched from FE with token or is not admin
     if (+userID !== +user_id && userID !== 1) {
