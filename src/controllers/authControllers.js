@@ -67,4 +67,15 @@ module.exports = {
       userID: foundUserInDB.id,
     });
   },
+
+  usersData: async (req, res, data) => {
+    const sql = `SELECT * FROM users`;
+    const [users, error] = await sqlQuarryHelper(sql);
+
+    if (error) return next(error);
+
+    console.log(chalk.bgGreen.whiteBright('users: '), users.length);
+
+    res.json({ totalUsers: users.length, latestUsers: users });
+  },
 };

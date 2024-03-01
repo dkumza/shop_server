@@ -195,4 +195,18 @@ module.exports = {
 
     res.json(products);
   },
+  productsData: async (req, res, next) => {
+    const sql = `SELECT * FROM products`;
+    const [products, error] = await sqlQuarryHelper(sql);
+
+    if (error) return next(error);
+
+    const productsValue = products.reduce((acc, obj) => {
+      return acc + +obj.price;
+    }, 0);
+
+    const avgPrice = (productsValue / products.length).toFixed(2);
+
+    res.json({ totalProducts: products.length, productsValue, avgPrice });
+  },
 };

@@ -32,5 +32,7 @@ productRouter.put(
   productControllers.edit,
 );
 productRouter.get('/personal/:userID', authToken, productControllers.getByUserID);
+// GET products data
+productRouter.get('/products-data', productControllers.productsData);
 
 module.exports = productRouter;

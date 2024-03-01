@@ -42,3 +42,9 @@ Content-Type: application/json
   "content": "good comment 1",
   "userID": 1
 }
+
+### Get users Count
+GET http://localhost:3000/api/auth/users-count
+
+### Get products data 
+GET http://localhost:3000/api/products-data
