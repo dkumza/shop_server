@@ -76,6 +76,6 @@ module.exports = {
 
     console.log(chalk.bgGreen.whiteBright('users: '), users.length);
 
-    res.json({ totalUsers: users.length, latestUsers: users });
+    res.json({ users, latestUsers: users });
   },
 };

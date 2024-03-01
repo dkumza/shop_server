@@ -207,6 +207,6 @@ module.exports = {
 
     const avgPrice = (productsValue / products.length).toFixed(2);
 
-    res.json({ totalProducts: products.length, productsValue, avgPrice });
+    res.json({ products, totalProducts: products.length, productsValue, avgPrice });
   },
 };

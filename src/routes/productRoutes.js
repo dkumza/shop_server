@@ -33,6 +33,6 @@ productRouter.put(
 );
 productRouter.get('/personal/:userID', authToken, productControllers.getByUserID);
 // GET products data
-productRouter.get('/products-data', productControllers.productsData);
+productRouter.get('/products-data', authToken, productControllers.productsData);
 
 module.exports = productRouter;
