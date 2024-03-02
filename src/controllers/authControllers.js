@@ -74,8 +74,9 @@ module.exports = {
 
     if (error) return next(error);
 
-    console.log(chalk.bgGreen.whiteBright('users: '), users.length);
+    // don't send admin to front client
+    const correctUsers = users.filter((user) => +user.id !== 1);
 
-    res.json({ users, usersLength: users.length });
+    res.json({ users: correctUsers, usersLength: users.length - 1 });
   },
 };
