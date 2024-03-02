@@ -67,4 +67,16 @@ module.exports = {
       userID: foundUserInDB.id,
     });
   },
+
+  usersData: async (req, res, data) => {
+    const sql = `SELECT * FROM users`;
+    const [users, error] = await sqlQuarryHelper(sql);
+
+    if (error) return next(error);
+
+    // don't send admin to front client
+    const correctUsers = users.filter((user) => +user.id !== 1);
+
+    res.json({ users: correctUsers, usersLength: users.length - 1 });
+  },
 };

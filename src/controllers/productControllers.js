@@ -120,12 +120,10 @@ module.exports = {
     const { prodId } = req.params;
     const { title, description, price, cat_id, sub_id, city, user_id, img_old_url } =
       req.body;
-    console.log(chalk.bgGreen.whiteBright('req.body: '), req.body);
 
     // check where images exists, if no updated images it will be at req.body
     if (req.body.img_urls) {
       goodImgUrls = req.body.img_urls;
-      console.log('goodImgUrls: ', goodImgUrls);
 
       // and if updated images will be at req.files (because sended with FormData())
     } else {
@@ -133,8 +131,8 @@ module.exports = {
       goodImgUrls = JSON.stringify(img_urls);
     }
 
-    // check if user ID matched from FE with token
-    if (userID !== +user_id) {
+    // check if user ID matched from FE with token or is not admin
+    if (+userID !== +user_id && userID !== 1) {
       // if id's do not match - delete uploads and return error
       deleteFile();
       return next(new APIError('Unauthorized', 400));
@@ -196,5 +194,19 @@ module.exports = {
     if (error) return next(error);
 
     res.json(products);
+  },
+  productsData: async (req, res, next) => {
+    const sql = `SELECT * FROM products`;
+    const [products, error] = await sqlQuarryHelper(sql);
+
+    if (error) return next(error);
+
+    const productsValue = products.reduce((acc, obj) => {
+      return acc + +obj.price;
+    }, 0);
+
+    const avgPrice = (productsValue / products.length).toFixed(2);
+
+    res.json({ products, totalProducts: products.length, productsValue, avgPrice });
   },
 };
