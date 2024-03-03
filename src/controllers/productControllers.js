@@ -209,4 +209,30 @@ module.exports = {
 
     res.json({ products, totalProducts: products.length, productsValue, avgPrice });
   },
+
+  addFavorite: async (req, res, next) => {
+    const { userID } = req;
+    const { prodID } = req.params;
+    const { status } = req.body;
+
+    console.log('prodID: ', prodID);
+    console.log('status: ', status);
+
+    const favData = [+prodID, userID];
+
+    console.log('favData: ', favData);
+
+    const sql = `INSERT INTO favorites (product_id, user_id) VALUES(?,?)`;
+    const [favorites, error] = await sqlQuarryHelper(sql, favData);
+
+    if (error) return next(error);
+
+    if (favorites.affectedRows !== 1) {
+      return next(new APIError('Something went wrong', 400));
+    }
+
+    console.log(chalk.bgGreen.whiteBright('favorites: '), favorites);
+
+    res.json({ msg: 'Favorite added' });
+  },
 };

@@ -35,4 +35,7 @@ productRouter.get('/personal/:userID', authToken, productControllers.getByUserID
 // GET products data
 productRouter.get('/products-data', authToken, productControllers.productsData);
 
+// GET product favorites
+productRouter.post('/favorites/:prodID', authToken, productControllers.addFavorite);
+
 module.exports = productRouter;
