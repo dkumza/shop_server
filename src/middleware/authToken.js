@@ -7,6 +7,7 @@ const { jwtSecret } = require('../config/config');
 module.exports = function authToken(req, res, next) {
   console.log('authToken in progress');
   const prepForToken = req.headers.authorization;
+  console.log('prepForToken: ', prepForToken);
   if (!prepForToken) throw new Error('Unauthorized');
   try {
     const token = prepForToken.split(' ')[1];
