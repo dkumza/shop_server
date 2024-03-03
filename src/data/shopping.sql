@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 26, 2024 at 08:40 AM
+-- Generation Time: Mar 03, 2024 at 07:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -131,6 +131,25 @@ CREATE TABLE `comments` (
   `created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`id`, `productID`, `content`, `userID`, `created`) VALUES
+(6, 1, 'mano commentas', 21, '2024-02-27 18:46:12'),
+(9, 2, 'cia irgi pakomentinau', 1, '2024-02-27 19:44:32');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `favorites`
+--
+
+CREATE TABLE `favorites` (
+  `product_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -157,9 +176,10 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `title`, `description`, `price`, `cat_id`, `sub_id`, `img_urls`, `city`, `user_id`, `created`, `updated`, `isDeleted`) VALUES
-(1, 'Good Title 1', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illum consequatur error dolorum iure minus! Ipsam id, quidem illum ea numquam, nisi fuga laborum minus facilis accusantium quia, culpa laboriosam!', 600.00, 1, 2, '[\"uploads/products/2024_02_25_11_48_38_576642a1-d070-487e-945d-17e566c9eff1/up_2024_02_25_11_48_38_james_wheeler_ZOA_cqKuJAA_unsplash_9f9a08c5-b8e1-4717-99fb-53420a75f567.jpg\",\"uploads/products/2024_02_25_11_48_38_576642a1-d070-487e-945d-17e566c9eff1/up_2024_02_25_11_48_38_adam_kool_ndN00KmbJ1c_unsplash_d2b177ad-032c-4918-926b-685fd5819ab2.jpg\"]', 4, 1, '2024-02-25 09:38:51', '2024-02-25 16:08:25', 1),
-(2, 'Good Title 2', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illum consequatur error dolorum iure minus! Ipsam id, quidem illum ea numquam, nisi fuga laborum minus facilis accusantium quia, culpa laboriosam!', 400.00, 2, 8, '[\"uploads/products/2024_02_25_19_00_04_21a56ce1-a3bc-4c7d-aca6-fe087ea7b795/up_2024_02_25_19_00_04_james_wheeler_ZOA_cqKuJAA_unsplash_5a4652a0-d54c-4feb-b23d-1a0095f936e7.jpg\"]', 14, 21, '2024-02-25 11:34:57', '2024-02-25 17:00:04', 0),
-(3, 'Good Title 1', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illum consequatur error dolorum iure minus! Ipsam id, quidem illum ea numquam, nisi fuga laborum minus facilis accusantium quia, culpa laboriosam!', 400.00, 1, 3, '[\"uploads/products/2024_02_25_13_54_06_04ecefaa-d213-4394-93ad-a3530fbe1d74/up_2024_02_25_13_54_06_adam_kool_ndN00KmbJ1c_unsplash_65fcb30c-2528-41cf-b5aa-3d4da29265f6.jpg\"]', 12, 21, '2024-02-25 11:53:41', '2024-02-25 11:54:06', 0);
+(1, 'Good Title 1', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illum consequatur error dolorum iure minus! Ipsam id, quidem illum ea numquam, nisi fuga laborum minus facilis accusantium quia, culpa laboriosam!', 600.00, 1, 2, '[\"uploads/products/2024_02_25_11_48_38_576642a1-d070-487e-945d-17e566c9eff1/up_2024_02_25_11_48_38_james_wheeler_ZOA_cqKuJAA_unsplash_9f9a08c5-b8e1-4717-99fb-53420a75f567.jpg\",\"uploads/products/2024_02_25_11_48_38_576642a1-d070-487e-945d-17e566c9eff1/up_2024_02_25_11_48_38_adam_kool_ndN00KmbJ1c_unsplash_d2b177ad-032c-4918-926b-685fd5819ab2.jpg\"]', 4, 1, '2024-02-25 09:38:51', '2024-03-01 16:28:55', 1),
+(2, 'Good Title 2', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illum consequatur error dolorum iure minus! Ipsam id, quidem illum ea numquam, nisi fuga laborum minus facilis accusantium quia, culpa laboriosam!', 400.00, 2, 8, '[\"uploads/products/2024_02_25_19_00_04_21a56ce1-a3bc-4c7d-aca6-fe087ea7b795/up_2024_02_25_19_00_04_james_wheeler_ZOA_cqKuJAA_unsplash_5a4652a0-d54c-4feb-b23d-1a0095f936e7.jpg\"]', 14, 21, '2024-02-25 11:34:57', '2024-03-01 09:01:34', 0),
+(3, 'Good Title 1', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illum consequatur error dolorum iure minus! Ipsam id, quidem illum ea numquam, nisi fuga laborum minus facilis accusantium quia, culpa laboriosam!', 400.00, 1, 3, '[\"uploads/products/2024_02_25_13_54_06_04ecefaa-d213-4394-93ad-a3530fbe1d74/up_2024_02_25_13_54_06_adam_kool_ndN00KmbJ1c_unsplash_65fcb30c-2528-41cf-b5aa-3d4da29265f6.jpg\"]', 12, 21, '2024-02-25 11:53:41', '2024-02-25 11:54:06', 0),
+(4, 'Good Title 1', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illum consequatur error dolorum iure minus! Ipsam id, quidem illum ea numquam, nisi fuga laborum minus facilis accusantium quia, culpa laboriosam!', 400.00, 2, 7, '[]', 16, 21, '2024-03-02 12:23:39', '2024-03-02 12:23:39', 0);
 
 -- --------------------------------------------------------
 
@@ -236,6 +256,13 @@ ALTER TABLE `comments`
   ADD KEY `userID` (`userID`);
 
 --
+-- Indexes for table `favorites`
+--
+ALTER TABLE `favorites`
+  ADD PRIMARY KEY (`product_id`,`user_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
@@ -282,13 +309,13 @@ ALTER TABLE `cities`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sub_categories`
@@ -300,7 +327,7 @@ ALTER TABLE `sub_categories`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Constraints for dumped tables
@@ -312,6 +339,13 @@ ALTER TABLE `users`
 ALTER TABLE `comments`
   ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`productID`) REFERENCES `products` (`id`),
   ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `favorites`
+--
+ALTER TABLE `favorites`
+  ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
+  ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `products`
