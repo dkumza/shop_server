@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 03, 2024 at 07:20 PM
+-- Generation Time: Mar 04, 2024 at 12:13 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -146,9 +146,16 @@ INSERT INTO `comments` (`id`, `productID`, `content`, `userID`, `created`) VALUE
 --
 
 CREATE TABLE `favorites` (
-  `product_id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `product_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `favorites`
+--
+
+INSERT INTO `favorites` (`user_id`, `product_id`) VALUES
+(21, 2);
 
 -- --------------------------------------------------------
 
