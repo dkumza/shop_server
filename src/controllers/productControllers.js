@@ -18,12 +18,13 @@ module.exports = {
 
     // const sql = 'SELECT * FROM `products` WHERE id=?';
     const sql = `SELECT  P.id, P.title, P.description, P. price, P.cat_id, C.name AS cat_name, SC.id AS sub_id, SC.name AS sub_c_name, 
-    P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone, U.id AS user_id, P.isDeleted
+    P.city, CT.name AS city_name, P.updated, P.img_urls, U.name AS user_name, U.telephone, U.id AS user_id, P.isDeleted, F.user_id AS fav_user
     FROM products AS P
     JOIN categories AS C ON P.cat_id = C.id
     JOIN sub_categories AS SC ON P.sub_id = SC.id
     JOIN cities AS CT on P.city = CT.id
     JOIN users AS U on P.user_id = U.id
+    LEFT JOIN favorites AS F on P.user_id = F.user_id
     WHERE P.id=?`;
     // make SQL quarry
     const [product, error] = await sqlQuarryHelper(sql, [prodId]);
@@ -93,7 +94,8 @@ module.exports = {
     const { userID } = req;
     const { productUserID, isDeleted } = req.body;
 
-    if (userID !== productUserID || userID !== 1) {
+    // check if user ID matched from FE with token or is not admin
+    if (+userID !== +productUserID && userID !== 1) {
       return next(new APIError('Unauthorized', 400));
     }
 
@@ -213,14 +215,8 @@ module.exports = {
   addFavorite: async (req, res, next) => {
     const { userID } = req;
     const { prodID } = req.params;
-    const { status } = req.body;
-
-    console.log('prodID: ', prodID);
-    console.log('status: ', status);
 
     const favData = [+prodID, userID];
-
-    console.log('favData: ', favData);
 
     const sql = `INSERT INTO favorites (product_id, user_id) VALUES(?,?)`;
     const [favorites, error] = await sqlQuarryHelper(sql, favData);
@@ -231,8 +227,42 @@ module.exports = {
       return next(new APIError('Something went wrong', 400));
     }
 
-    console.log(chalk.bgGreen.whiteBright('favorites: '), favorites);
-
     res.json({ msg: 'Favorite added' });
+  },
+  dellFavorite: async (req, res, next) => {
+    const { userID } = req;
+    const { prodID } = req.params;
+
+    const favData = [+prodID, userID];
+
+    const sql = `DELETE FROM favorites WHERE product_id=? AND user_id=?`;
+    const [favorites, error] = await sqlQuarryHelper(sql, favData);
+
+    if (error) return next(error);
+
+    if (favorites.affectedRows !== 1) {
+      return next(new APIError('Something went wrong', 400));
+    }
+
+    res.json({ msg: 'Favorite removed' });
+  },
+
+  userFavorites: async (req, res, next) => {
+    const { userID } = req;
+    const { userID: user_id } = req.params;
+    console.log('userID: ', userID);
+    console.log('user_id: ', user_id);
+
+    if (userID !== +user_id) return next(new APIError('Unauthorized', 400));
+
+    const sql = `SELECT P.* FROM products AS P
+                 JOIN favorites AS F 
+                 WHERE P.id = F.product_id AND F.user_id=?`;
+
+    const [favorites, error] = await sqlQuarryHelper(sql, [userID]);
+
+    if (error) return next(error);
+
+    res.json(favorites);
   },
 };

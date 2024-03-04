@@ -37,5 +37,9 @@ productRouter.get('/products-data', authToken, productControllers.productsData);
 
 // GET product favorites
 productRouter.post('/favorites/:prodID', authToken, productControllers.addFavorite);
+// DELETE product favorites
+productRouter.delete('/favorites/:prodID', authToken, productControllers.dellFavorite);
+// Get product favorites by userID
+productRouter.get('/favorites/:userID', authToken, productControllers.userFavorites);
 
 module.exports = productRouter;
