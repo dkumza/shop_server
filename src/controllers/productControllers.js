@@ -263,8 +263,6 @@ module.exports = {
 
     if (error) return next(error);
 
-    console.log(chalk.bgGreen.whiteBright('favorites: '), favorites);
-
     res.json(favorites);
   },
 };
