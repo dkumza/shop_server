@@ -246,4 +246,25 @@ module.exports = {
 
     res.json({ msg: 'Favorite removed' });
   },
+
+  userFavorites: async (req, res, next) => {
+    const { userID } = req;
+    const { userID: user_id } = req.params;
+    console.log('userID: ', userID);
+    console.log('user_id: ', user_id);
+
+    if (userID !== +user_id) return next(new APIError('Unauthorized', 400));
+
+    const sql = `SELECT P.* FROM products AS P
+                 JOIN favorites AS F 
+                 WHERE P.id = F.product_id AND F.user_id=?`;
+
+    const [favorites, error] = await sqlQuarryHelper(sql, [userID]);
+
+    if (error) return next(error);
+
+    console.log(chalk.bgGreen.whiteBright('favorites: '), favorites);
+
+    res.json(favorites);
+  },
 };
