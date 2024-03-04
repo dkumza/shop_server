@@ -93,7 +93,8 @@ module.exports = {
     const { userID } = req;
     const { productUserID, isDeleted } = req.body;
 
-    if (userID !== productUserID || userID !== 1) {
+    // check if user ID matched from FE with token or is not admin
+    if (+userID !== +productUserID && userID !== 1) {
       return next(new APIError('Unauthorized', 400));
     }
 
@@ -213,10 +214,8 @@ module.exports = {
   addFavorite: async (req, res, next) => {
     const { userID } = req;
     const { prodID } = req.params;
-    const { status } = req.body;
 
     console.log('prodID: ', prodID);
-    console.log('status: ', status);
 
     const favData = [+prodID, userID];
 
@@ -231,8 +230,27 @@ module.exports = {
       return next(new APIError('Something went wrong', 400));
     }
 
-    console.log(chalk.bgGreen.whiteBright('favorites: '), favorites);
-
     res.json({ msg: 'Favorite added' });
+  },
+  dellFavorite: async (req, res, next) => {
+    const { userID } = req;
+    const { prodID } = req.params;
+
+    console.log('prodID: ', prodID);
+
+    const favData = [+prodID, userID];
+
+    console.log('favData: ', favData);
+
+    const sql = `DELETE FROM favorites WHERE product_id=? AND user_id=?`;
+    const [favorites, error] = await sqlQuarryHelper(sql, favData);
+
+    if (error) return next(error);
+
+    if (favorites.affectedRows !== 1) {
+      return next(new APIError('Something went wrong', 400));
+    }
+
+    res.json({ msg: 'Favorite deleted' });
   },
 };
