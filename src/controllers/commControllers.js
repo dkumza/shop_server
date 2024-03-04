@@ -71,9 +71,7 @@ module.exports = {
 
     if (error) return next(error);
 
-    if (comments.length === 0) {
-      return next(new APIError('Comments not found', 404));
-    }
+    if (comments.length === 0) return; // no comments
 
     res.json(comments);
   },

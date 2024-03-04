@@ -216,11 +216,7 @@ module.exports = {
     const { userID } = req;
     const { prodID } = req.params;
 
-    console.log('prodID: ', prodID);
-
     const favData = [+prodID, userID];
-
-    console.log('favData: ', favData);
 
     const sql = `INSERT INTO favorites (product_id, user_id) VALUES(?,?)`;
     const [favorites, error] = await sqlQuarryHelper(sql, favData);
@@ -237,11 +233,7 @@ module.exports = {
     const { userID } = req;
     const { prodID } = req.params;
 
-    console.log('prodID: ', prodID);
-
     const favData = [+prodID, userID];
-
-    console.log('favData: ', favData);
 
     const sql = `DELETE FROM favorites WHERE product_id=? AND user_id=?`;
     const [favorites, error] = await sqlQuarryHelper(sql, favData);
